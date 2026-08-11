@@ -1,20 +1,22 @@
-import { Image, StyleSheet, Text, View } from "react-native";
-import avatar from "../assets/avatar.webp";
+import { Image, ImageSourcePropType, StyleSheet, Text, View } from "react-native";
 import { colors, shadows, textSize } from "../theme";
-type HeaderProps = {
+type ProfileProps = {
     name: string,
-    totalTasks: number
+    role: string,
+    image: ImageSourcePropType,
+    totalTasks?: number
 }
 
-const Header = ({name, totalTasks}: HeaderProps) => {
+const ProfileCard = ({name, role, image, totalTasks}: ProfileProps) => {
   return (
     <View style={styles.header}>
         <View style={styles.avatarHeader}>
-            <Image source={avatar} style={styles.avatarImage} />
+            <Image source={image} style={styles.avatarImage} />
         </View>
         <View style={{gap:4}}>
             <Text style={styles.headerText}>{name}</Text>
-            <Text>Total de tareas: {totalTasks}</Text>
+            <Text>{role}</Text>
+            {totalTasks !== undefined && <Text>Total de tareas: {totalTasks}</Text>}
         </View>
     </View>
   )
@@ -44,4 +46,4 @@ const styles = StyleSheet.create({
    fontSize: textSize.subTitle
   }
 })
-export default Header;
+export default ProfileCard;

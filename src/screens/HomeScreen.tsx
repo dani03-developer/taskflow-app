@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
+import avatar from "../assets/avatar.webp";
 import CardTask from "../components/CardTask";
-import Header from "../components/Header";
+import ProfileCard from "../components/ProfileCard";
 import { tasks } from "../data/index";
 const HomeScreen = () => {
     const name = 'Daniela Machaca'
@@ -9,7 +10,7 @@ const HomeScreen = () => {
      <View style={styles.gretting}>
               <Text style={styles.gettingText}>Hola, buenas noches {name.slice(0, 7)} ☺️</Text>
             </View>
-            <Header name={name} totalTasks={tasks.length} />
+            <ProfileCard name={name} role="Desarrolladora Frontend" image={avatar} totalTasks={tasks.length} />
             <View>
               <Text>Tareas Completadas {
                 tasks.filter(t => t.status).length} / {tasks.length}</Text>
