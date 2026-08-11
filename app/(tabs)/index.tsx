@@ -1,19 +1,21 @@
-import { StyleSheet, Text, View } from "react-native"
-
-
-export default function HomeScreen() {
+import { StyleSheet } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import HomeScreen from "../../src/screens/HomeScreen";
+import { colors } from '../../src/theme';
+export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Bienvenido a TaskFlow</Text>
-    </View>
+    <SafeAreaView  style={styles.container}>
+       <HomeScreen></HomeScreen>
+    </SafeAreaView>
   )
    
 }
 const styles = StyleSheet.create({
   container:{
     flex:1,
-    justifyContent:'center',
     alignItems:'center',
-    backgroundColor:'#2c898e'
+    backgroundColor: colors.backgroundColor,
+    padding:16,
+    gap:16
   }
 })
