@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import { colors, shadows, textSize } from "../theme";
+import { border, colors, shadows, textSize } from "../theme";
 import type { Task } from "../types";
 type CardTaskProps ={
     task: Task //este es el props de tipo task que se va a recibir en el componente CardTask
@@ -29,10 +29,13 @@ const CardTask = ({ task }: CardTaskProps) => {
 const styles = StyleSheet.create({
     cardTask:{
     width:'100%',
-    backgroundColor: colors.backgroundColor,
-    boxShadow: shadows.boxShadow,
+    shadowColor: shadows.shadowColor,
+    shadowOffset: shadows.shadowOffset,
+    shadowOpacity: shadows.shadowOpacity,      
+    shadowRadius: shadows.shadowRadius,
+    elevation: shadows.elevation,
     padding:16,
-    borderRadius:10
+    borderRadius:border.borderRadius
     },
     headerTask:{
     gap: 2

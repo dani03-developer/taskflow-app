@@ -1,11 +1,11 @@
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import ProfileScreen from "../../src/screens/ProfileScreen";
+import HomeScreen from "../../src/screens/HomeScreen";
 import { colors } from '../../src/theme';
 export default function App() {
   return (
     <SafeAreaView  style={styles.container}>
-       <ProfileScreen></ProfileScreen>
+       <HomeScreen></HomeScreen>
     </SafeAreaView>
   )
    
