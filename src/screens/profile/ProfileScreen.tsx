@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
+import ProfileCard from "../../components/ProfileCard";
+import { textSize } from "../../theme";
 import avatar from "../assets/avatar.webp";
-import ProfileCard from "../components/ProfileCard";
-import { textSize } from "../theme";
 const ProfileScreen = () => {
   return (
     <View style={styles.container}>

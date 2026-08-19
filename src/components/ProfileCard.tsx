@@ -1,5 +1,6 @@
 import { Image, ImageSourcePropType, StyleSheet, Text, View } from "react-native";
-import { border, colors, shadows, textSize } from "../theme";
+import { colors, shadows, spacing, textSize } from "../theme";
+import { radius } from "../theme/spacing";
 type ProfileProps = {
     name: string,
     role: string,
@@ -32,9 +33,9 @@ const styles = StyleSheet.create({
     elevation: shadows.elevation,
     flexDirection:'row',
     gap:16,
-    padding:16,
+    padding:spacing.lg,
     alignItems:'center',
-    borderRadius:border.borderRadius
+    borderRadius:radius.md
   },
   avatarHeader:{
     width:40,

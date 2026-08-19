@@ -12,6 +12,7 @@ export const colors ={
     textGreen:'#5B7431',
     textGray:'#7D7B7B',
     red:'#FDB7B7',
-    textRed:'#B63E3E'
+    textRed:'#B63E3E',
+    backColor:'rgba(80, 80, 80, 0.49)'
 
 }

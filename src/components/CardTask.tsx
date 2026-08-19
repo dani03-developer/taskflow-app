@@ -1,44 +1,85 @@
-import { StyleSheet, Text, View } from "react-native";
-import { border, colors, shadows, textSize } from "../theme";
+import { Lucide } from "@react-native-vector-icons/lucide";
+import { memo } from "react";
+import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { colors, radius, shadows, spacing, statusColor, textSize } from "../theme";
 import type { Task } from "../types";
-type CardTaskProps ={
-    task: Task //este es el props de tipo task que se va a recibir en el componente CardTask
+type CardTaskProps = {
+  task: Task //este es el props de tipo task que se va a recibir en el componente CardTask
+  onPress: (task:Task)=>void
 }
 
-  const tasksSpanish: Record<Task['time'], string> = {  //defino un objeto de tipo Record que mapea los valores de time a su traducción en español. Recibe time, y espera un string como valor (la traducción).
-    today: 'Hoy',
-    tomorrow: 'Mañana',
-    'next week': 'Próxima semana',
-    'next month': 'Próximo mes'
-  }
-
-const CardTask = ({ task }: CardTaskProps) => {
+const CardTask = memo(function CardTask({ task, onPress}: CardTaskProps) {
+  const { background, text } = statusColor[task.status]
   return (
-    <View style={styles.cardTask} key={task.id}>
+    <TouchableOpacity onPress={() => onPress(task)} hitSlop={8} activeOpacity={0.60} style={styles.cardTask} key={task.id}>
+      <View style={styles.containerInfo}>
         <View style={styles.headerTask}>
-            <Text style={{fontSize: textSize.title, fontWeight: 'bold'}}>{task.title}</Text>
-            <Text style={{fontSize: textSize.text, color: colors.subText}}>{task.description}</Text>
+        <View style={{flexDirection:'row', gap:2}}>
+          <View style={[styles.buttonHeader, { backgroundColor: background }]}>
+            <Text style={[styles.textButton, { color: text }]}>{task.status}</Text>
+          </View>
+          <View style={[styles.buttonHeader]}>
+            <Text style={[styles.textButton]}>{task.category}</Text>
+          </View>
         </View>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop:8}}>
-            <Text style={{color: task.status ? 'green' : 'orange'}}>{task.status ? 'Completada' : 'Pendiente'}</Text>
-            <Text style={{color: colors.subText}}>{tasksSpanish[task.time]}</Text>
-        </View>
-    </View>
+        <View style={styles.buttonHeader}>
+            <Text style={styles.textButton}>{task.date}</Text>
+          </View>
+      </View>
+      <View style={styles.infoTask}>
+        <Text style={styles.titleTask}>{task.title}</Text>
+        <Text style={styles.descriptionTask}>{task.description}</Text>
+      </View>
+      </View>
+      <Pressable><Lucide name="chevron-right" size={20} color={colors.darkGray}/></Pressable>
+    </TouchableOpacity>
   )
-}
+})
 const styles = StyleSheet.create({
-    cardTask:{
-    width:'100%',
+  cardTask: {
+    width: '92%',
+    backgroundColor: colors.backgroundColor,
     shadowColor: shadows.shadowColor,
     shadowOffset: shadows.shadowOffset,
-    shadowOpacity: shadows.shadowOpacity,      
+    shadowOpacity: shadows.shadowOpacity,
     shadowRadius: shadows.shadowRadius,
     elevation: shadows.elevation,
-    padding:16,
-    borderRadius:border.borderRadius
-    },
-    headerTask:{
+    padding: spacing.lg,
+    borderRadius: radius.md,
+    flexDirection:'row',
+    alignItems: 'center',
+    gap:6
+  },
+  containerInfo:{
+    width:'95%',
+    gap:6
+  },
+  headerTask: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  buttonHeader: {
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: radius.md,
+    backgroundColor: colors.softGray
+  },
+  textButton: {
+    fontSize: textSize.textMin,
+    fontWeight: 700,
+    color: colors.textGray
+  },
+  infoTask: {
     gap: 2
-    }
+  },
+  titleTask:{
+    color: colors.text,
+    fontSize: textSize.title, 
+    fontWeight: 'bold' 
+  },
+  descriptionTask:{
+    fontSize: textSize.text, 
+    color: colors.subText 
+  }
 })
 export default CardTask
