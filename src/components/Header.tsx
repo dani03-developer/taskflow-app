@@ -25,7 +25,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: '100%',
         gap: spacing.sm,
-        padding:spacing.lg
+        paddingHorizontal:spacing.lg,
+        paddingVertical:spacing.md,
+        
     },
     avatarHeader: {
         width: 55,

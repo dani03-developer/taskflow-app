@@ -1,18 +1,19 @@
 import { Lucide } from "@react-native-vector-icons/lucide";
-import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { colors, radius, shadows, spacing, statusColor, textSize } from "../../theme";
-import { Task } from "../../types";
-type Props = {
-  task: Task
-  onBack: () => void
-  onToggle: (id: string) => void
-  onDelete: (id: string) => void
-}
-const TaskDetailScreen = ({ task, onBack, onToggle, onDelete }: Props) => {
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { colors, radius, screenStyles, shadows, spacing, statusColor, textSize } from "../../theme";
+import { RootStackParamList } from '../../types';
+type Props = NativeStackScreenProps<
+  RootStackParamList,
+  'TaskDetail'
+>
+const TaskDetailScreen = ({ navigation, route }: Props) => {
+  const { task } = route.params
   const { background, text } = statusColor[task.status]
+
   return (
-    <View style={styles.containerTaskDetail}>
-      <Pressable style={styles.buttonBack} onPress={onBack}><Lucide name="chevron-left" size={20} color={colors.textGray} /></Pressable>
+    <View style={screenStyles.container}>
+      <Pressable style={styles.buttonBack} onPress={()=>navigation.goBack()}><Lucide name="chevron-left" size={20} color={colors.textGray} /></Pressable>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
         <View style={[styles.button,{backgroundColor:background}]}>
           <Text style={[styles.textButton, { color: text }]}>{task.status}</Text>
@@ -35,7 +36,7 @@ const TaskDetailScreen = ({ task, onBack, onToggle, onDelete }: Props) => {
         <Text style={styles.subtitle}>Descripción</Text>
         <Text style={styles.description}>{task.description}</Text>
       </ScrollView>
-      <TouchableOpacity
+      {/*<TouchableOpacity
         style={[styles.buttonAction, task.status === 'Completado' ? styles.actionUndo : styles.actionDone]}
         onPress={() => onToggle(task.id)}
         activeOpacity={0.85}
@@ -49,7 +50,7 @@ const TaskDetailScreen = ({ task, onBack, onToggle, onDelete }: Props) => {
       <TouchableOpacity style={[styles.buttonAction, { backgroundColor: colors.red }]} onPress={() => onDelete(task.id)} activeOpacity={0.85}>
         <Lucide name="trash" size={20} color={colors.textRed} />
         <Text style={[styles.buttonText, { color: colors.textRed }]}>Eliminar Tarea</Text>
-      </TouchableOpacity>
+      </TouchableOpacity>*/}
     </View>
   )
 }

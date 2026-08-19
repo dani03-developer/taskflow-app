@@ -1,15 +1,15 @@
 import { Lucide } from "@react-native-vector-icons/lucide";
+import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import CalendarComponent from '../../components/Calendar';
-import { colors, textSize } from '../../theme';
+import { SEED_TASKS } from "../../data";
+import { colors, screenStyles, textSize } from '../../theme';
 import { Task } from "../../types";
-type Props ={
-  tasks: Task[]
-}
-const CalendarScreen =({tasks}:Props)=>{
+const CalendarScreen =()=>{
+    const [tasks] = useState<Task[]>(SEED_TASKS)
     return(
         <>
-            <View style={styles.container}>
+            <View style={screenStyles.container}>
                 <Pressable style={styles.buttonBack}><Lucide name="chevron-left" size={20} color={colors.textGray}/></Pressable>
                 <Text style={styles.title}>Actividad</Text>
                 <CalendarComponent tasks={tasks}></CalendarComponent>
@@ -19,11 +19,6 @@ const CalendarScreen =({tasks}:Props)=>{
     );
 }
 const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    backgroundColor: colors.backgroundColor,
-    gap: 10
-  },
   title:{
     fontSize:textSize.bigTitle,
     color: colors.text,

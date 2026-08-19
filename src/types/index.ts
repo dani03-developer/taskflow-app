@@ -10,3 +10,9 @@ export type Task ={ //defino un objeto de tipo Task y sus propiedades
     date: string | null,
     status: State
 }
+export type RootStackParamList ={
+    Tasks: { openForm?: boolean } | undefined
+    TaskDetail: {
+        task: Task
+    }
+}

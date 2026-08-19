@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from "react-native";
+import avatar from "../../assets/avatar.webp";
 import ProfileCard from "../../components/ProfileCard";
-import { textSize } from "../../theme";
-import avatar from "../assets/avatar.webp";
+import { screenStyles, textSize } from "../../theme";
 const ProfileScreen = () => {
   return (
-    <View style={styles.container}>
+    <View style={screenStyles.container}>
       <Text style={styles.title}>Mi Perfil</Text>
       <ProfileCard
         name="Daniela Machaca"
@@ -16,10 +16,6 @@ const ProfileScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    gap: 16,
-  },
   title: {
     fontSize: textSize.title,
     fontWeight: "bold",
