@@ -8,7 +8,8 @@ import { colors } from '../../src/theme';
 import { State, Task } from "../../src/types";
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>(SEED_TASKS) //esto detalla el principio de la lista y a partir de allí se empieza a modificar con el useState
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null)
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
+  const selectedTask = tasks.find((t) => t.id === selectedTaskId) ?? null
 const getTodayString = () => {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
@@ -36,11 +37,11 @@ const getTodayString = () => {
   }
   const deleteTask = useCallback((id: string) => {
     setTasks((prev) => prev.filter((t) => t.id !== id)) //copia sin el item
-    setSelectedTask(null)
+    setSelectedTaskId(null)
   }, [])
 
-  const openDetail = useCallback((task: Task) => setSelectedTask(task), [])
-  const closeDetail = useCallback(() => setSelectedTask(null), [])
+  const openDetail = useCallback((task: Task) => setSelectedTaskId(task.id), [])
+  const closeDetail = useCallback(() => setSelectedTaskId(null), [])
 
   return (
     <SafeAreaView style={styles.container}>

@@ -1,5 +1,5 @@
 import { Lucide } from "@react-native-vector-icons/lucide";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { colors, radius, shadows, spacing, statusColor, textSize } from "../../theme";
 import { Task } from "../../types";
 type Props = {
@@ -12,37 +12,44 @@ const TaskDetailScreen = ({ task, onBack, onToggle, onDelete }: Props) => {
   const { background, text } = statusColor[task.status]
   return (
     <View style={styles.containerTaskDetail}>
-      <Pressable style={styles.buttonBack} onPress={onBack}><Lucide name="chevron-left" size={20} color={colors.textGray}/></Pressable>
-      <View style={[styles.buttonHeader, { backgroundColor: background }]}>
-        <Text style={[styles.textButton, { color: text }]}>{task.status}</Text>
-      </View>
-      <Text style={styles.title}>{task.title}</Text>
-      <View style={styles.containerDetail}>
-        <View style={[styles.detail, {borderBottomWidth:1, borderBottomColor:'#CFCFCF', paddingBottom:12}]}>
-          <Text>Categoría</Text>
-          <View style={[styles.buttonHeader]}>
-            <Text style={[styles.textButton,{fontWeight:600}]}>{task.category}</Text>
+      <Pressable style={styles.buttonBack} onPress={onBack}><Lucide name="chevron-left" size={20} color={colors.textGray} /></Pressable>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
+        <View style={[styles.button,{backgroundColor:background}]}>
+          <Text style={[styles.textButton, { color: text }]}>{task.status}</Text>
+        </View>
+        <Text style={styles.title}>{task.title}</Text>
+        <View style={styles.containerDetail}>
+          <View style={[styles.detail, { borderBottomWidth: 1, borderBottomColor: '#CFCFCF', paddingBottom: 12 }]}>
+            <Text>Categoría</Text>
+            <View style={[styles.button, styles.buttonCategory]}>
+              <Text style={[styles.textButton, { fontWeight: 600 }]}>{task.category}</Text>
+            </View>
+          </View>
+          <View style={styles.detail}>
+            <Text>Fecha</Text>
+            <View style={[styles.button,  styles.buttonCategory]}>
+              <Text style={[styles.textButton, { fontWeight: 600 }]}>{task.date}</Text>
+            </View>
           </View>
         </View>
-        <View style={styles.detail}>
-          <Text>Fecha</Text>
-          <View style={styles.buttonHeader}>
-            <Text style={[styles.textButton,{fontWeight:600}]}>{task.date}</Text>
-          </View>
-        </View>
-      </View>
-      <View style={{flex:1, gap:4}}>
-       <Text style={styles.subtitle}>Descripción</Text>
-       <Text>{task.description}</Text>
-      </View>
-      <Pressable style={[styles.buttonAction, {backgroundColor:colors.green}]}  onPress={() => onToggle(task.id)} >
-        <Lucide name="check" size={20} color={colors.textGreen}/>
-        <Text style={[styles.buttonText,{color:colors.textGreen}]}>Marcar como Completado</Text>
-      </Pressable>
-      <Pressable style={[styles.buttonAction, {backgroundColor:colors.red}]}  onPress={() => onDelete(task.id)}>
-        <Lucide name="trash" size={20} color={colors.textRed}/>
-        <Text style={[styles.buttonText,{color:colors.textRed}]}>Eliminar Tarea</Text>
-      </Pressable>
+        <Text style={styles.subtitle}>Descripción</Text>
+        <Text style={styles.description}>{task.description}</Text>
+      </ScrollView>
+      <TouchableOpacity
+        style={[styles.buttonAction, task.status === 'Completado' ? styles.actionUndo : styles.actionDone]}
+        onPress={() => onToggle(task.id)}
+        activeOpacity={0.85}
+      >
+        {task.status === 'Completado' ?
+          (<><Lucide name="loader" size={20} color={colors.textPurple} /><Text style={[styles.buttonText, { color: colors.textPurple }]}>Desmarcar</Text></>)
+          :
+          (<><Lucide name="check" size={20} color={colors.textGreen} /><Text style={[styles.buttonText, { color: colors.textGreen }]}>Marcar como Completado</Text></>)
+        }
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.buttonAction, { backgroundColor: colors.red }]} onPress={() => onDelete(task.id)} activeOpacity={0.85}>
+        <Lucide name="trash" size={20} color={colors.textRed} />
+        <Text style={[styles.buttonText, { color: colors.textRed }]}>Eliminar Tarea</Text>
+      </TouchableOpacity>
     </View>
   )
 }
@@ -51,24 +58,34 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     padding: spacing.lg,
-    gap: spacing.lg,
+    gap: spacing.sm,
     alignItems: 'flex-start'
 
   },
-   buttonBack:{
+  buttonBack: {
     width: 40,
     height: 40,
-    alignItems:'center',
-    justifyContent:'center',
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: colors.softGray,
     borderRadius: '100%'
   },
-  buttonHeader: {
+  scrollView: {
+    width: '100%',
+  },
+  scrollViewContent: {
+    paddingTop: spacing.lg,
+    gap: spacing.md,
+    alignItems: 'flex-start',
+  },
+  button:{
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs,
     borderRadius: radius.md,
-    backgroundColor: colors.softGray,
     alignItems: 'center'
+  },
+  buttonCategory:{
+    backgroundColor:colors.softGray
   },
   textButton: {
     fontSize: textSize.subTitle,
@@ -90,7 +107,7 @@ const styles = StyleSheet.create({
     elevation: shadows.elevation,
     padding: spacing.lg,
     borderRadius: radius.md,
-    gap:12
+    gap: 12
   },
   detail: {
     alignItems: 'center',
@@ -98,23 +115,34 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
 
   },
-  subtitle:{
+  subtitle: {
+    color: colors.text,
+    fontSize: textSize.title,
+    fontWeight: 'bold'
+  },
+  description:{
     color:colors.text,
-    fontSize:textSize.title,
-    fontWeight:'bold'
+    fontSize:textSize.text+1,
+    lineHeight:spacing.xl
   },
-  buttonAction:{
-    flexDirection:'row',
-    width:'100%',
-    padding:spacing.md,
-    alignItems:'center',
-    justifyContent:'center',
-    borderRadius:radius.md,
-    gap:4
+  buttonAction: {
+    flexDirection: 'row',
+    width: '100%',
+    padding: spacing.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: radius.md,
+    gap: 4
   },
-  buttonText:{
-    fontSize:textSize.subTitle,
-    fontWeight:'bold'
-  }
+  buttonText: {
+    fontSize: textSize.subTitle,
+    fontWeight: 'bold'
+  },
+  actionUndo: {
+    backgroundColor: colors.purple
+  },
+  actionDone: {
+    backgroundColor: colors.green
+  },
 })
 export default TaskDetailScreen

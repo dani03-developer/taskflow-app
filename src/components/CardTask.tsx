@@ -28,7 +28,7 @@ const CardTask = memo(function CardTask({ task, onPress}: CardTaskProps) {
       </View>
       <View style={styles.infoTask}>
         <Text style={styles.titleTask}>{task.title}</Text>
-        <Text style={styles.descriptionTask}>{task.description}</Text>
+        <Text numberOfLines={1} style={styles.descriptionTask}>{task.description}</Text>
       </View>
       </View>
       <Pressable><Lucide name="chevron-right" size={20} color={colors.darkGray}/></Pressable>

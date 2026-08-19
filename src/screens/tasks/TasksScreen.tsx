@@ -1,12 +1,12 @@
-import Header from "@/src/components/Header";
-import { colors } from "@/src/theme";
 import { Lucide } from "@react-native-vector-icons/lucide";
 import { useCallback, useState } from "react";
 import { FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import Bep from '../../assets/Bep.png';
 import CardTask from '../../components/CardTask';
 import EmptyState from "../../components/EmptyState";
+import Header from "../../components/Header";
 import TaskForm from "../../components/TaskForm";
+import { colors } from "../../theme";
 import { Task } from '../../types/index';
 type Props ={
   tasks: Task[]
@@ -37,7 +37,7 @@ const TasksScreen = ({tasks, onAdd,onSelect}:Props) => {
           keyExtractor={keyExtractor}
           renderItem={renderItem}
           ListEmptyComponent={EmptyState}
-          contentContainerStyle={{flexGrow:1, gap: 4, alignItems:'center'}}
+          contentContainerStyle={{flexGrow:1, gap: 8, alignItems:'center'}}
           showsVerticalScrollIndicator={false}
 
           initialNumToRender={8} //cantidad de tarjetas a renderizar

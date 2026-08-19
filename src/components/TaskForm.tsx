@@ -249,17 +249,16 @@ const styles = StyleSheet.create({
     },
     input: {
         height: 40,
-        borderWidth: 1,
         paddingHorizontal: 14,
         paddingVertical: 12,
         width: '100%',
         borderRadius: radius.md,
-        borderColor: colors.textGray,
         backgroundColor: colors.softGray,
         color: colors.text
     },
     inputFocused: {
-        borderColor: colors.darkGray
+        borderColor: colors.darkGray,
+        borderWidth:1
     },
 
     inputError: {
@@ -293,8 +292,6 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 9.5,
         borderRadius: radius.md,
-        borderWidth: 1,
-        borderColor: colors.textGray,
         backgroundColor: colors.softGray
     },
 
