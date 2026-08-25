@@ -14,6 +14,10 @@ Navegación basada en tabs (`@react-navigation/bottom-tabs`) con un stack indepe
 ## Video de demostración
 
 
+https://github.com/user-attachments/assets/209a319b-f39a-4ec8-b6aa-c2e4420459bc
+
+
+
 ## Get started
 
 1. Install dependencies
