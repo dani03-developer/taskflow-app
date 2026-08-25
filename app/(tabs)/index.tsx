@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import TabNavigator from "../../src/navigation/TabNavigator";
+import AppNavigator from "../../src/navigation/AppNavigator";
 export default function App() {
 {/*const getTodayString = () => {
     const now = new Date();
@@ -34,7 +34,7 @@ export default function App() {
     <SafeAreaProvider>
     <StatusBar style='dark'/> 
     <SafeAreaView style={styles.safe} edges={['top']}>
-      <TabNavigator />
+      <AppNavigator />
     </SafeAreaView>
     </SafeAreaProvider>
   )

@@ -1,6 +1,18 @@
-# Welcome to your Expo app 👋
+# TaskFlow 📋
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+TaskFlow es una app de productividad hecha con [Expo](https://expo.dev) y React Native. Permite organizar tareas, visualizarlas en un calendario, usar un temporizador Pomodoro y gestionar el perfil del usuario.
+
+## Funcionalidades
+
+- **Tareas**: crear, ver el detalle y gestionar tareas desde una lista principal.
+- **Calendario**: visualizar las tareas organizadas por fecha.
+- **Pomodoro**: temporizador para sesiones de trabajo enfocado.
+- **Perfil**: información y ajustes del usuario.
+
+Navegación basada en tabs (`@react-navigation/bottom-tabs`) con un stack independiente por sección (`src/navigation`).
+
+## Video de demostración
+
 
 ## Get started
 
@@ -23,7 +35,21 @@ In the output, you'll find options to open the app in a
 - [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
 - [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+Este proyecto usa [file-based routing](https://docs.expo.dev/router/introduction) a través de la carpeta **app**, y la lógica de pantallas y componentes vive en **src**.
+
+## Estructura del proyecto
+
+```
+app/                 # Entry point (expo-router)
+src/
+  components/        # Componentes reutilizables (TaskForm, CardTask, Calendar, etc.)
+  navigation/         # Stacks y navegador principal
+  screens/            # Pantallas: tasks, calendar, pomodoro, profile
+  data/               # Datos y mocks
+  theme/              # Estilos y tema
+  types/              # Tipos de TypeScript
+  utils/              # Utilidades
+```
 
 ## Get a fresh project
 
@@ -42,9 +68,3 @@ To learn more about developing your project with Expo, look at the following res
 - [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
 - [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
 
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.

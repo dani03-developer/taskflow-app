@@ -7,13 +7,14 @@ import PomodoroStack from './PomodoroStack'
 import ProfileStack from './ProfileStack'
 import TaskStack from "./TaskStack"
 const Tab = createBottomTabNavigator();
-const TabNavigator = () => {
+const AppNavigator = () => {
   return (
         <Tab.Navigator
             screenOptions={{
                 headerShown:false,
                 tabBarInactiveTintColor:colors.textGray,
                 tabBarActiveTintColor: colors.textGray,
+                tabBarShowLabel: false,
                 tabBarStyle:{
                     backgroundColor: colors.backgroundColor,
                     borderTopWidth: 0,  
@@ -24,14 +25,14 @@ const TabNavigator = () => {
                 name='Tareas'
                 component={TaskStack}
                 options={{
-                    tabBarIcon:()=><Lucide name={`square-check-big`} size={20} color={colors.textGray}/>
+                    tabBarIcon:()=><Lucide name={`square-check-big`} size={25} color={colors.textGray}/>
                 }}
             />
             <Tab.Screen
                 name='Pomodoro'
                 component={PomodoroStack}
                 options={{
-                    tabBarIcon:()=><Lucide name={`loader-circle`} size={20} color={colors.textGray}/>
+                    tabBarIcon:()=><Lucide name={`loader-circle`} size={25} color={colors.textGray}/>
                 }}
             />
             <Tab.Screen
@@ -45,7 +46,7 @@ const TabNavigator = () => {
                             testID={testID}
                             style={styles.newTaskButton}
                         >
-                            <Lucide name={'plus'} size={30} color={colors.backgroundColor} />
+                            <Lucide name={'plus'} size={25} color={colors.backgroundColor} />
                         </TouchableOpacity>
                     ),
                 }}
@@ -63,14 +64,14 @@ const TabNavigator = () => {
                 name='Calendario'
                 component={CalendarStack}
                 options={{
-                    tabBarIcon:()=><Lucide name={`calendar-range`} size={20} color={colors.textGray}/>
+                    tabBarIcon:()=><Lucide name={`calendar-range`} size={25} color={colors.textGray}/>
                 }}
             />
              <Tab.Screen
                 name='Perfil'
                 component={ProfileStack}
                 options={{
-                    tabBarIcon:()=><Lucide name={`user`} size={20} color={colors.textGray}/>
+                    tabBarIcon:()=><Lucide name={`user`} size={25} color={colors.textGray}/>
                 }}
             />
         </Tab.Navigator>
@@ -89,4 +90,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default TabNavigator
+export default AppNavigator

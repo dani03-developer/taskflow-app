@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     backgroundColor:colors.softGray
   },
   textButton: {
-    fontSize: textSize.subTitle,
+    fontSize: textSize.text,
     fontWeight: 700,
     color: colors.textGray
   },

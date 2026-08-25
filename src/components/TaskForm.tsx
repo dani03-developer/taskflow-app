@@ -75,8 +75,6 @@ const TaskForm = ({ visibleForm, tasks, onClose,onAdd }: Props) => {
             status: 'Por Hacer'
         }
 
-        console.log(newTask)
-
         onAdd(newTask) //Aquí está la función se envía todo y se crea la tarea
 
         Alert.alert('Éxito', 'Tarea capturada localmente.')
