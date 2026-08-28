@@ -2,11 +2,12 @@ import { Lucide } from "@react-native-vector-icons/lucide"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { StyleSheet, TouchableOpacity } from "react-native"
 import { colors } from '../theme'
+import { TabParamList } from "../types"
 import CalendarStack from './CalendarStack'
 import PomodoroStack from './PomodoroStack'
 import ProfileStack from './ProfileStack'
 import TaskStack from "./TaskStack"
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<TabParamList>()
 const AppNavigator = () => {
   return (
         <Tab.Navigator
@@ -22,21 +23,21 @@ const AppNavigator = () => {
             }}
         >
             <Tab.Screen
-                name='Tareas'
+                name='TaskStack'
                 component={TaskStack}
                 options={{
                     tabBarIcon:()=><Lucide name={`square-check-big`} size={25} color={colors.textGray}/>
                 }}
             />
             <Tab.Screen
-                name='Pomodoro'
+                name='PomodoroStack'
                 component={PomodoroStack}
                 options={{
                     tabBarIcon:()=><Lucide name={`loader-circle`} size={25} color={colors.textGray}/>
                 }}
             />
             <Tab.Screen
-                name='Agregar'
+                name='NewTask'
                 component={()=>null}
                 options={{
                     tabBarButton: ({ onPress, accessibilityState, testID }) => (
@@ -53,7 +54,7 @@ const AppNavigator = () => {
                 listeners={({ navigation }) => ({
                     tabPress: (e) => {
                         e.preventDefault() 
-                        navigation.navigate('Tareas', {
+                        navigation.navigate('TaskStack', {
                             screen: 'Tasks',
                             params: { openForm: true },
                         })
@@ -61,14 +62,14 @@ const AppNavigator = () => {
                 })}
             />
             <Tab.Screen
-                name='Calendario'
+                name='CalendarStack'
                 component={CalendarStack}
                 options={{
                     tabBarIcon:()=><Lucide name={`calendar-range`} size={25} color={colors.textGray}/>
                 }}
             />
              <Tab.Screen
-                name='Perfil'
+                name='ProfileStack'
                 component={ProfileStack}
                 options={{
                     tabBarIcon:()=><Lucide name={`user`} size={25} color={colors.textGray}/>

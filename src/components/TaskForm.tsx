@@ -2,17 +2,19 @@ import { useState } from 'react';
 import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { categories } from "../data";
+import { addTask, selectAllTask } from '../features/tasks/TasksSlice';
+import { useAppDispatch, useAppSelector } from '../store/hooks/hooks';
 import { colors, radius, textSize } from "../theme";
-import type { Category, Task } from '../types';
+import type { Category } from '../types';
 import CalendarComponent from './Calendar';
-
 type Props = {
     visibleForm: boolean
-    tasks: Task[]
     onClose: () => void
-    onAdd: (task: Task) => void
+    
 }
-const TaskForm = ({ visibleForm, tasks, onClose,onAdd }: Props) => {
+const TaskForm = ({ visibleForm, onClose}: Props) => {
+    const dispatch = useAppDispatch()
+    const tasks = useAppSelector(selectAllTask)
     const insets = useSafeAreaInsets();
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
@@ -66,16 +68,12 @@ const TaskForm = ({ visibleForm, tasks, onClose,onAdd }: Props) => {
     const handleAddTask = () => {
 
         if (isButtonDisabled || !fecha) return //se sale de la función
-        const newTask: Task = {
-            id: Date.now().toString(),
+       dispatch(addTask({
             title,
             description,
             category,
-            date: formatDateString(fecha),
-            status: 'Por Hacer'
-        }
-
-        onAdd(newTask) //Aquí está la función se envía todo y se crea la tarea
+            date: formatDateString(fecha)
+       }))
 
         Alert.alert('Éxito', 'Tarea capturada localmente.')
 

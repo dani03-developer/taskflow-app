@@ -1,3 +1,4 @@
+import WeekCalendar from "@/src/components/WeekCalendar";
 import { RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useCallback, useEffect, useState } from "react";
@@ -5,19 +6,25 @@ import { FlatList, View } from "react-native";
 import Bep from '../../assets/Bep.png';
 import CardTask from '../../components/CardTask';
 import EmptyState from "../../components/EmptyState";
+import FilterBar from '../../components/FilterBar';
 import Header from "../../components/Header";
 import TaskForm from "../../components/TaskForm";
-import { SEED_TASKS } from "../../data/index";
+import { selectFilter, selectFilteredTask, toogleTaskStatus } from "../../features/tasks/TasksSlice";
+import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import { screenStyles, spacing } from "../../theme";
-import { RootStackParamList, Task } from '../../types/index';
+import { Task } from "../../types/";
+import { TasksStackParamList } from '../../types/index';
 type NavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
+  TasksStackParamList,
   'Tasks'
 >
-type TasksRouteProp = RouteProp<RootStackParamList, 'Tasks'>
+type TasksRouteProp = RouteProp<TasksStackParamList, 'Tasks'>
 const keyExtractor = (item: Task) => item.id
-
 const TasksScreen = ({navigation, route}:{navigation: NavigationProp, route: TasksRouteProp}) => {
+  const name='Dani'
+    const dispatch = useAppDispatch()
+    const tasks = useAppSelector(selectFilteredTask)
+    const filter = useAppSelector(selectFilter)
  const [formOpen, setFormOpen] = useState(false)
   useEffect(() => { //venimos del botón '+' del TabNavigator, abrimos el form y limpiamos el param
     if (route.params?.openForm) {
@@ -25,39 +32,34 @@ const TasksScreen = ({navigation, route}:{navigation: NavigationProp, route: Tas
       navigation.setParams({ openForm: undefined })
     }
   }, [route.params?.openForm, navigation])
-  const [tasks, setTasks] = useState<Task[]>(SEED_TASKS) //esto detalla el principio de la lista y a partir de allí se empieza a modificar con el useState
-  const name = 'Dani'
-  //const pendig = tasks.filter((t) => !t.status).length
-      const addTask = useCallback((task: Task) => { //agrega una nueva tarea
-    setTasks((prev) => [task, ...prev])
-  }, [])
-    const openDetail = useCallback((task: Task) => {
-      navigation.navigate('TaskDetail', {
-        task,
-      });
-    }
-    , [navigation]
-  );
+
+  const toggleTask = useCallback(
+    (id:string)=>{
+      dispatch(toogleTaskStatus(id))
+    },[dispatch]
+  )
   const renderItem = useCallback( //se usa callBack y no function porque si los parametros no cambian este no renderiza de nuevo y se queda con lo que tiene
     ({ item }: { item: Task }) => {
       return (
         <CardTask
           task={item}
-          onPress={openDetail}
+          onPress={()=>navigation.navigate('TaskDetail', {taskId: item.id})}
         />
       )
-    }, [addTask, openDetail] //esto quiere decir dependencia si esto cambia se renderiza sino no
+    }, [toggleTask] //esto quiere decir dependencia si esto cambia se renderiza sino no
   )
   return (
     <>
     <View style={[screenStyles.container, {padding:0}]}>
       <Header name={name} image={Bep}></Header>
+      <WeekCalendar />
+      <FilterBar />
       <FlatList
         data={tasks}
         keyExtractor={keyExtractor}
         renderItem={renderItem}
-        ListEmptyComponent={EmptyState}
-        contentContainerStyle={{ flexGrow: 1, gap: 8, alignItems: 'center', padding:spacing.lg}}
+        ListEmptyComponent={<EmptyState filter={filter}/>}
+        contentContainerStyle={{ flexGrow: 1, gap: 8, alignItems: 'center', paddingHorizontal:spacing.lg}}
         showsVerticalScrollIndicator={false}
 
         initialNumToRender={8} //cantidad de tarjetas a renderizar
@@ -68,9 +70,7 @@ const TasksScreen = ({navigation, route}:{navigation: NavigationProp, route: Tas
       </FlatList>
       <TaskForm
         visibleForm={formOpen}
-        tasks={tasks}
-        onClose={() => setFormOpen(false)}
-        onAdd={addTask} />
+        onClose={() => setFormOpen(false)} />
         </View>
     </>
   )

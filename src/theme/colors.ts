@@ -4,6 +4,7 @@ export const colors ={
     subText: '#BDBDBD',
     softGray: '#F2F3EC',
     darkGray:'#dadad9',
+    deepGray:'#EAEBE5',
     orange:'#FFD396',
     textOrange:'#FFA62A',
     purple:'#DDCAF6',

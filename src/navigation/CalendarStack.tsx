@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import CalendarScreen from "../screens/calendar/CalendarScreen";
-const Stack =createNativeStackNavigator() //llamo a las funciones que nos da stackNavigator
+import { CalendarStackParamList } from "../types";
+const Stack =createNativeStackNavigator<CalendarStackParamList>() //llamo a las funciones que nos da stackNavigator
 
 const ClendarStack = () => {
   return (

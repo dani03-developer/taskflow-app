@@ -1,8 +1,9 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import PomodoroScreen from "../screens/pomodoro/PomodoroScreen";
-const Stack =createNativeStackNavigator() //llamo a las funciones que nos da stackNavigator
+import { PomodoroStackParamList } from "../types";
+const Stack =createNativeStackNavigator<PomodoroStackParamList>() //llamo a las funciones que nos da stackNavigator
 
-const ClendarStack = () => {
+const PomodoroStack = () => {
   return (
     <Stack.Navigator
      screenOptions={{
@@ -10,11 +11,11 @@ const ClendarStack = () => {
      }}
     >
         <Stack.Screen
-            name='PomodoroHome'
+            name='Pomodoro'
             component={PomodoroScreen}
         />
     </Stack.Navigator>
   )
 }
 
-export default ClendarStack
+export default PomodoroStack

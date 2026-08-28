@@ -1,6 +1,7 @@
 import { Lucide } from "@react-native-vector-icons/lucide";
 import { memo } from "react";
 import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { isPending } from "../features/tasks/TasksSlice";
 import { colors, radius, shadows, spacing, statusColor, textSize } from "../theme";
 import type { Task } from "../types";
 type CardTaskProps = {
@@ -9,14 +10,15 @@ type CardTaskProps = {
 }
 
 const CardTask = memo(function CardTask({ task, onPress}: CardTaskProps) {
-  const { background, text } = statusColor[task.status]
+  const estadoVisual = isPending(task) ? 'Pendiente' : task.status
+  const { background, text } = statusColor[estadoVisual]
   return (
     <TouchableOpacity onPress={() => onPress(task)} hitSlop={8} activeOpacity={0.60} style={styles.cardTask} key={task.id}>
       <View style={styles.containerInfo}>
         <View style={styles.headerTask}>
         <View style={{flexDirection:'row', gap:2}}>
           <View style={[styles.buttonHeader, { backgroundColor: background }]}>
-            <Text style={[styles.textButton, { color: text }]}>{task.status}</Text>
+            <Text style={[styles.textButton, { color: text }]}>{estadoVisual}</Text>
           </View>
           <View style={[styles.buttonHeader]}>
             <Text style={[styles.textButton]}>{task.category}</Text>

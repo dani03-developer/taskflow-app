@@ -1,22 +1,35 @@
 import { Lucide } from "@react-native-vector-icons/lucide";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { deleteTask, isPending, selectTaskById, toogleTaskStatus } from "../../features/tasks/TasksSlice";
+import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import { colors, radius, screenStyles, shadows, spacing, statusColor, textSize } from "../../theme";
-import { RootStackParamList } from '../../types';
-type Props = NativeStackScreenProps<
-  RootStackParamList,
-  'TaskDetail'
->
-const TaskDetailScreen = ({ navigation, route }: Props) => {
-  const { task } = route.params
-  const { background, text } = statusColor[task.status]
+import { TasksStackParamList } from '../../types';
 
+type Props = NativeStackScreenProps<TasksStackParamList,'TaskDetail'>
+const TaskDetailScreen = ({navigation,route}:Props) => {
+  const {taskId} = route.params
+  const dispatch = useAppDispatch()
+  const task =useAppSelector(selectTaskById(taskId))
+  if (!task) {
+    return null
+  }
+  const estadoVisual = isPending(task) ? 'Pendiente' : task.status
+  const { background, text } = statusColor[estadoVisual]
+
+  const handleToogle = ()=>{
+    dispatch(toogleTaskStatus(task.id))
+  }
+const handleDelete =()=>{
+  dispatch(deleteTask(task.id))
+  navigation.goBack()
+}
   return (
     <View style={screenStyles.container}>
       <Pressable style={styles.buttonBack} onPress={()=>navigation.goBack()}><Lucide name="chevron-left" size={20} color={colors.textGray} /></Pressable>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
         <View style={[styles.button,{backgroundColor:background}]}>
-          <Text style={[styles.textButton, { color: text }]}>{task.status}</Text>
+          <Text style={[styles.textButton, { color: text }]}>{estadoVisual}</Text>
         </View>
         <Text style={styles.title}>{task.title}</Text>
         <View style={styles.containerDetail}>
@@ -36,9 +49,9 @@ const TaskDetailScreen = ({ navigation, route }: Props) => {
         <Text style={styles.subtitle}>Descripción</Text>
         <Text style={styles.description}>{task.description}</Text>
       </ScrollView>
-      {/*<TouchableOpacity
+      <TouchableOpacity
         style={[styles.buttonAction, task.status === 'Completado' ? styles.actionUndo : styles.actionDone]}
-        onPress={() => onToggle(task.id)}
+        onPress={handleToogle}
         activeOpacity={0.85}
       >
         {task.status === 'Completado' ?
@@ -47,10 +60,10 @@ const TaskDetailScreen = ({ navigation, route }: Props) => {
           (<><Lucide name="check" size={20} color={colors.textGreen} /><Text style={[styles.buttonText, { color: colors.textGreen }]}>Marcar como Completado</Text></>)
         }
       </TouchableOpacity>
-      <TouchableOpacity style={[styles.buttonAction, { backgroundColor: colors.red }]} onPress={() => onDelete(task.id)} activeOpacity={0.85}>
+      <TouchableOpacity style={[styles.buttonAction, { backgroundColor: colors.red }]} onPress={handleDelete} activeOpacity={0.85}>
         <Lucide name="trash" size={20} color={colors.textRed} />
         <Text style={[styles.buttonText, { color: colors.textRed }]}>Eliminar Tarea</Text>
-      </TouchableOpacity>*/}
+      </TouchableOpacity>
     </View>
   )
 }

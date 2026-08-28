@@ -48,7 +48,6 @@ const tasks: Array<[string, string, Task['category'],Task['date'],Task['status']
   ]//array de tareas
 
   export const SEED_TASKS: Task[] = tasks.map(([title, description, category, date, status], i) =>({
-
     id: `seed-${String(i + 1).padStart(2,'0')}`,
     title,
     description,
