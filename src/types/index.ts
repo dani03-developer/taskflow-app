@@ -18,9 +18,15 @@ export type TasksStackParamList ={
 }
 export type ProfileStackParamList={
     Profile: undefined
+    TaskDetail: {
+        taskId: string
+    }
 }
 export type CalendarStackParamList={
     Calendar: undefined
+    TaskDetail: {
+        taskId: string
+    }
 }
 export type PomodoroStackParamList={
     Pomodoro: undefined

@@ -11,6 +11,19 @@ TaskFlow es una app de productividad hecha con [Expo](https://expo.dev) y React 
 
 Navegación basada en tabs (`@react-navigation/bottom-tabs`) con un stack independiente por sección (`src/navigation`).
 
+## Estado global con Redux
+
+El estado de las tareas se maneja con **Redux Toolkit** (`@reduxjs/toolkit`) y **react-redux**:
+
+- `src/store/index.ts`: configura el store (`configureStore`) y expone los tipos `RootState` y `AppDispatch`.
+- `src/store/hooks/hooks.ts`: hooks tipados `useAppDispatch` y `useAppSelector`.
+- `src/features/tasks/TasksSlice.ts`: slice de tareas (`tasks`) con:
+  - **Acciones**: `addTask`, `toogleTaskStatus`, `deleteTask`, `setFilter`.
+  - **Selectores**: `selectAllTask`, `selectFilter`, `selectTaskById`, `selectFilteredTask`, `selectPendingTasks` y `selectTaskStats` (memoizados con `createSelector`).
+  - Filtros disponibles (`taskFilter`): `todo`, `completed`, `pending`.
+
+Las pantallas de tareas, calendario y perfil consumen este store en lugar de estado local, por lo que las tareas se mantienen sincronizadas entre secciones.
+
 ## Video de demostración
 
 
@@ -47,8 +60,10 @@ Este proyecto usa [file-based routing](https://docs.expo.dev/router/introduction
 app/                 # Entry point (expo-router)
 src/
   components/        # Componentes reutilizables (TaskForm, CardTask, Calendar, etc.)
+  features/          # Slices de Redux (tasks, etc.)
   navigation/         # Stacks y navegador principal
   screens/            # Pantallas: tasks, calendar, pomodoro, profile
+  store/              # Configuración de Redux (store, hooks tipados)
   data/               # Datos y mocks
   theme/              # Estilos y tema
   types/              # Tipos de TypeScript

@@ -4,9 +4,12 @@ import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 
 import { deleteTask, isPending, selectTaskById, toogleTaskStatus } from "../../features/tasks/TasksSlice";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import { colors, radius, screenStyles, shadows, spacing, statusColor, textSize } from "../../theme";
-import { TasksStackParamList } from '../../types';
 
-type Props = NativeStackScreenProps<TasksStackParamList,'TaskDetail'>
+// Tipo mínimo para poder reutilizar esta pantalla en cualquier stack (Tasks, Calendar, Profile)
+type TaskDetailOnlyParamList = {
+  TaskDetail: { taskId: string }
+}
+type Props = NativeStackScreenProps<TaskDetailOnlyParamList,'TaskDetail'>
 const TaskDetailScreen = ({navigation,route}:Props) => {
   const {taskId} = route.params
   const dispatch = useAppDispatch()
@@ -25,7 +28,7 @@ const handleDelete =()=>{
   navigation.goBack()
 }
   return (
-    <View style={screenStyles.container}>
+    <View style={[screenStyles.container, screenStyles.spacingContainer]}>
       <Pressable style={styles.buttonBack} onPress={()=>navigation.goBack()}><Lucide name="chevron-left" size={20} color={colors.textGray} /></Pressable>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
         <View style={[styles.button,{backgroundColor:background}]}>

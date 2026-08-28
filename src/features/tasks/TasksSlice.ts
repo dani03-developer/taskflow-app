@@ -58,6 +58,14 @@ export const isPending = (task: Task): boolean => {
     if (task.status === 'Completado') return false
     return !!task.date && task.date < getTodayString()
 }
+const isCompletedMonth = (task: Task): boolean => {
+    const fechaActual = getTodayString()
+    const mesActual = fechaActual.split('-')[1]; //genera un estring con la fecha y saca el mes que está en la posición 1
+    const mesTask = task.date?.split('-')[1];
+    if (task.status === 'Completado' && mesActual === mesTask){
+        return true
+    }return false
+}
 export const selectFilteredTask = createSelector(
     [selectAllTask, selectFilter],
     (tasks, filter)=>{
@@ -74,8 +82,11 @@ export const selectFilteredTask = createSelector(
     }
    
 )
-export const selectlenghtPending = createSelector([selectAllTask], (tasks)=>{
+export const selectPendingTasks = createSelector([selectAllTask], (tasks)=>{
+    return tasks.filter((task)=> isPending(task))
+})
+export const selectTaskStats = createSelector([selectAllTask], (tasks)=>{
     const pending = tasks.filter((task) => isPending(task)).length
-
-    return {pending}
+    const completed = tasks.filter((t) => isCompletedMonth(t)).length
+    return {pending, completed}
 })

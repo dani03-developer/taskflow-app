@@ -1,14 +1,26 @@
 import { Lucide } from "@react-native-vector-icons/lucide";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import LottieView from 'lottie-react-native';
+import { useCallback } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import avatar from '../../assets/fem.png';
-import { selectlenghtPending } from "../../features/tasks/TasksSlice";
+import TaskList from "../../components/TaskList";
+import { selectPendingTasks, selectTaskStats } from "../../features/tasks/TasksSlice";
 import { useAppSelector } from "../../store/hooks/hooks";
 import { colors, radius, screenStyles, spacing, textSize } from "../../theme";
-const ProfileScreen = () => {
-  const { pending } = useAppSelector(selectlenghtPending)
+import { ProfileStackParamList } from "../../types";
+type Props = NativeStackScreenProps<ProfileStackParamList, 'Profile'>
+const ProfileScreen = ({ navigation }: Props) => {
+  const { pending, completed } = useAppSelector(selectTaskStats)
+  const pendingTasks = useAppSelector(selectPendingTasks)
+  const handleTaskPress = useCallback(
+    (taskId: string) => {
+      navigation.navigate('TaskDetail', { taskId })
+    }, [navigation]
+  )
   return (
     <View style={screenStyles.container}>
+      <View style={screenStyles.spacingContainer}>
       <View style={styles.header}>
         <Text style={styles.title}>Perfil</Text>
         <Pressable><Lucide name="square-pen" size={textSize.bigTitle} color={'#464455'} /></Pressable>
@@ -29,7 +41,7 @@ const ProfileScreen = () => {
           </View>
           <View style={[styles.containerStreak,{ backgroundColor:colors.green}]}>
             <Text style={[styles.text, {color:colors.textGreen}]}>Completado</Text>
-            <Text style={[styles.numbers, {color:colors.textGreen}]}>10</Text>
+            <Text style={[styles.numbers, {color:colors.textGreen}]}>{completed}</Text>
             <Text style={[styles.text, {color:colors.textGreen}]}>Mes</Text>
           </View>
           <View style={[styles.containerStreak, { backgroundColor:colors.orange}]}>
@@ -48,6 +60,8 @@ const ProfileScreen = () => {
           </View>
         </View>
       </View>
+      </View>
+        <TaskList tasks={pendingTasks} filter="pending" onTaskPress={handleTaskPress} />
     </View>
   );
 };

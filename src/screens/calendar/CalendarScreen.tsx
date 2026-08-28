@@ -1,18 +1,40 @@
-import { Lucide } from "@react-native-vector-icons/lucide";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { RouteProp } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useCallback, useMemo, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
 import CalendarComponent from '../../components/Calendar';
+import TaskList from "../../components/TaskList";
+import { getTodayString, selectAllTask } from "../../features/tasks/TasksSlice";
+import { useAppSelector } from "../../store/hooks/hooks";
 import { colors, screenStyles, textSize } from '../../theme';
-
-const CalendarScreen =()=>{
+import { CalendarStackParamList } from '../../types/index';
+type NavigationProp = NativeStackNavigationProp<
+  CalendarStackParamList,
+  'Calendar'
+>
+type CalendarRouteProp = RouteProp<CalendarStackParamList, 'Calendar'>
+const CalendarScreen =({navigation, route}:{navigation: NavigationProp, route: CalendarRouteProp})=>{
+  const [fechaSeleccionada, setFechaSeleccionada] = useState<string | null>(null)
+  const tasks = useAppSelector(selectAllTask)
+  const handleTaskPress = useCallback(
+    (taskId:string)=>{
+      navigation.navigate('TaskDetail', {taskId})
+    },[navigation]
+  )
+  const tareasDelDia = useMemo(() => {
+    const fechaActual = getTodayString()
+    if (!fechaSeleccionada) return tasks.filter((task)=>task.date === fechaActual )  // sin fecha elegida, mostrás todas
+    return tasks.filter((task) => task.date === fechaSeleccionada)
+}, [tasks, fechaSeleccionada])
     return(
-        <>
-            <View style={screenStyles.container}>
-                <Pressable style={styles.buttonBack} ><Lucide name="chevron-left" size={20} color={colors.textGray}/></Pressable>
-                <Text style={styles.title}>Actividad</Text>
-                <CalendarComponent></CalendarComponent>
-                <Text style={styles.title}>Lista de hoy:</Text>
+        <View style={screenStyles.container}>
+            <View style={screenStyles.spacingContainer}>
+                <Text style={styles.title}>Calendario</Text>
+                <CalendarComponent onSelectDate={(date) => setFechaSeleccionada(date.dateString)}></CalendarComponent>
+                <Text style={styles.title}>Tareas:</Text>
             </View>
-        </>
+            <TaskList tasks={tareasDelDia} filter="todo" onTaskPress={handleTaskPress} />
+        </View>
     );
 }
 const styles = StyleSheet.create({
@@ -20,14 +42,6 @@ const styles = StyleSheet.create({
     fontSize:textSize.title,
     color: colors.text,
     fontWeight:'bold'
-  },
-  buttonBack:{
-    width: 40,
-    height: 40,
-    alignItems:'center',
-    justifyContent:'center',
-    backgroundColor: colors.softGray,
-    borderRadius: '100%'
   }
 })
 export default CalendarScreen

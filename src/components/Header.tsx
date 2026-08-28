@@ -30,8 +30,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: '100%',
         gap: spacing.sm,
-        paddingHorizontal: spacing.lg,
-        paddingVertical: spacing.md,
 
     },
     avatarHeader: {

@@ -44,7 +44,6 @@ const styles = StyleSheet.create({
     shadowRadius: shadows.shadowRadius,
     elevation: shadows.elevation,
     flexDirection: 'row',
-    marginHorizontal:spacing.lg,
     borderRadius: radius.md,
     padding:spacing.xs
   },

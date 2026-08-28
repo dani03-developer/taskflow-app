@@ -40,7 +40,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: colors.deepGray,
     borderRadius: 100,
-    marginHorizontal: spacing.lg,
     height: 50,
     gap: spacing.xs
   },
