@@ -3,7 +3,7 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { FILTERS, selectFilter, setFilter, taskFilter } from "../features/tasks/TasksSlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks/hooks";
-import { colors, spacing } from '../theme';
+import { colors, fonts, spacing } from '../theme';
 const FILTER_KEYS = Object.keys(FILTERS) as taskFilter[]
 const TABS: Record<taskFilter, { icon: LucideIconName; textActive: string; BackgroundActive: string }> = {
   todo: { icon: 'loader', textActive: colors.textPurple, BackgroundActive: colors.purple },
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 13,
-    fontWeight: '700',
+    fontFamily:fonts.Intersemibold,
     color: colors.textGray
   },
 })

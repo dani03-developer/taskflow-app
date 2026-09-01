@@ -2,7 +2,7 @@ import { Lucide } from "@react-native-vector-icons/lucide";
 import { memo } from "react";
 import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { isPending } from "../features/tasks/TasksSlice";
-import { colors, radius, shadows, spacing, statusColor, textSize } from "../theme";
+import { colors, fonts, radius, shadows, spacing, statusColor, textSize } from "../theme";
 import type { Task } from "../types";
 type CardTaskProps = {
   task: Task //este es el props de tipo task que se va a recibir en el componente CardTask
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   },
   textButton: {
     fontSize: textSize.textMin,
-    fontWeight: 700,
+   fontFamily:fonts.Intersemibold,
     color: colors.textGray
   },
   infoTask: {
@@ -77,11 +77,12 @@ const styles = StyleSheet.create({
   titleTask:{
     color: colors.text,
     fontSize: textSize.title, 
-    fontWeight: 'bold' 
+    fontFamily:fonts.Interbold
   },
   descriptionTask:{
     fontSize: textSize.text, 
-    color: colors.subText 
+    color: colors.subText,
+    fontFamily:fonts.Interregular
   }
 })
 export default CardTask

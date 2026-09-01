@@ -4,7 +4,7 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Calendar, DateData, LocaleConfig } from 'react-native-calendars';
 import { useSelector } from 'react-redux';
 import { getTodayString, isPending, selectAllTask } from "../features/tasks/TasksSlice";
-import { colors, statusColor, textSize } from '../theme';
+import { colors, fonts, statusColor, textSize } from '../theme';
 import type { State } from '../types';
 import { ptAR } from "../utils/localCalendarConfig";
 LocaleConfig.locales["pt-ar"] = ptAR
@@ -120,6 +120,7 @@ const CalendarComponent = ({ onSelectDate }: CalendarComponentProps) => {
                 }
                 theme={{
                     textMonthFontSize: textSize.subTitle,
+                    textMonthFontFamily: fonts.Interbold,
                     calendarBackground: 'transparent',
                     arrowColor: colors.darkGray,
                 }}
@@ -147,7 +148,7 @@ const styles = StyleSheet.create({
     },
     dayText: {
         fontSize: textSize.text,
-        fontWeight: 500
+        fontFamily: fonts.Intermedium
     }
 })
 export default CalendarComponent

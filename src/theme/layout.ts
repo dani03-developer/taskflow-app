@@ -1,6 +1,6 @@
-import { StyleSheet } from 'react-native'
-import { colors } from './colors'
-import { spacing } from './spacing'
+import { StyleSheet } from 'react-native';
+import { colors } from './colors';
+import { spacing } from './spacing';
 export const screenStyles = StyleSheet.create({
   container: {
     flex: 1,

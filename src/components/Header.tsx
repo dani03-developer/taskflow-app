@@ -1,7 +1,7 @@
 import LottieView from 'lottie-react-native';
 import React from 'react';
 import { ImageSourcePropType, StyleSheet, Text, View } from "react-native";
-import { colors, spacing, textSize } from "../theme";
+import { colors, fonts, spacing, textSize } from "../theme";
 type ProfileProps = {
     name: string,
     image: ImageSourcePropType,
@@ -12,7 +12,7 @@ const Header = ({ name, image }: ProfileProps) => {
         <>
             <View style={styles.containerHeader}>
                 <LottieView
-                    source={require('../lotties/bep-fem.json')}
+                    source={require('../assets/lotties/bep-fem.json')}
                     autoPlay
                     loop
                     style={styles.avatarHeader}
@@ -42,13 +42,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     gettingText: {
-        fontSize: textSize.title,
-        fontWeight: '700',
-        color: colors.text
+        fontSize: textSize.title+4,
+        color: colors.text,
+        fontFamily: fonts.BepFont,
     },
     text: {
         fontSize: textSize.text,
-        color: colors.textGray
+        color: colors.textGray,
+        fontFamily: fonts.Interregular
     }
 })
 export default Header

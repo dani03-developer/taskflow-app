@@ -6,14 +6,14 @@ import CalendarComponent from '../../components/Calendar';
 import TaskList from "../../components/TaskList";
 import { getTodayString, selectAllTask } from "../../features/tasks/TasksSlice";
 import { useAppSelector } from "../../store/hooks/hooks";
-import { colors, screenStyles, textSize } from '../../theme';
+import { colors, fonts, screenStyles, textSize } from '../../theme';
 import { CalendarStackParamList } from '../../types/index';
 type NavigationProp = NativeStackNavigationProp<
   CalendarStackParamList,
   'Calendar'
 >
 type CalendarRouteProp = RouteProp<CalendarStackParamList, 'Calendar'>
-const CalendarScreen =({navigation, route}:{navigation: NavigationProp, route: CalendarRouteProp})=>{
+const CalendarScreen =({navigation}:{navigation: NavigationProp})=>{
   const [fechaSeleccionada, setFechaSeleccionada] = useState<string | null>(null)
   const tasks = useAppSelector(selectAllTask)
   const handleTaskPress = useCallback(
@@ -23,7 +23,7 @@ const CalendarScreen =({navigation, route}:{navigation: NavigationProp, route: C
   )
   const tareasDelDia = useMemo(() => {
     const fechaActual = getTodayString()
-    if (!fechaSeleccionada) return tasks.filter((task)=>task.date === fechaActual )  // sin fecha elegida, mostrás todas
+    if (!fechaSeleccionada) return tasks.filter((task)=>task.date === fechaActual )  // sin fecha elegida, mostrás todas de la fecha actual
     return tasks.filter((task) => task.date === fechaSeleccionada)
 }, [tasks, fechaSeleccionada])
     return(
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   title:{
     fontSize:textSize.title,
     color: colors.text,
-    fontWeight:'bold'
+    fontFamily: fonts.Interbold
   }
 })
 export default CalendarScreen

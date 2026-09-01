@@ -2,7 +2,7 @@ import { Lucide, LucideIconName } from "@react-native-vector-icons/lucide";
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import type { taskFilter } from "../features/tasks/TasksSlice";
-import { colors, spacing, textSize } from '../theme';
+import { colors, fonts, spacing, textSize } from '../theme';
 type Props = {
   filter: taskFilter
 }
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: textSize.title,
-    fontWeight: '800',
+    fontFamily: fonts.Interbold,
     color: colors.darkGray,
     textAlign: 'center',
 
@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: textSize.subTitle,
     color: colors.darkGray,
-    textAlign: 'center'
+    textAlign: 'center',
+    fontFamily: fonts.Intermedium,
   }
 })

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { StyleSheet, Text, View } from "react-native";
-import { colors, radius, shadows, spacing, textSize } from '../theme';
+import { colors, fonts, radius, shadows, spacing, textSize } from '../theme';
 const WeekCalendar = () => {
   const week = useMemo((): Date[] => {
     const now = new Date();
@@ -51,18 +51,17 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 3,
     paddingVertical: spacing.sm,
     borderRadius: radius.lg
   },
    textDayName:{
     color:colors.subText,
-    fontWeight: 600,
+    fontFamily:fonts.Intersemibold,
     fontSize:textSize.text
   },
   textDay:{
     color:colors.subText,
-    fontWeight: 500,
+    fontFamily:fonts.Intermedium,
     fontSize:textSize.subTitle
   }
 })

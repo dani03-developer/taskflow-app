@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { categories } from "../data";
-import { addTask, selectAllTask } from '../features/tasks/TasksSlice';
-import { useAppDispatch, useAppSelector } from '../store/hooks/hooks';
+import { addTask, getTodayString } from '../features/tasks/TasksSlice';
+import { useAppDispatch } from '../store/hooks/hooks';
 import { colors, radius, textSize } from "../theme";
 import type { Category } from '../types';
 import CalendarComponent from './Calendar';
@@ -14,7 +14,6 @@ type Props = {
 }
 const TaskForm = ({ visibleForm, onClose}: Props) => {
     const dispatch = useAppDispatch()
-    const tasks = useAppSelector(selectAllTask)
     const insets = useSafeAreaInsets();
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
@@ -55,11 +54,6 @@ const TaskForm = ({ visibleForm, onClose}: Props) => {
             setDescriptionError('')
         }
     }
-
-    const getTodayString = () => {
-        const now = new Date();
-        return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-    };
 
     const formatDateString = (date: Date) => {
         return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
@@ -170,7 +164,6 @@ const TaskForm = ({ visibleForm, onClose}: Props) => {
                                 <View style={styles.backdrop}>
                                     <View style={styles.contenido}>
                                         <CalendarComponent
-                                            tasks={tasks}
                                             onSelectDate={(date) => {
                                                 const selected = new Date(date.year, date.month - 1, date.day)
                                                 setFecha(selected)

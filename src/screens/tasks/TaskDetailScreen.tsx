@@ -1,9 +1,10 @@
 import { Lucide } from "@react-native-vector-icons/lucide";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { updateStreak } from "../../features/streak/streakSlice";
 import { deleteTask, isPending, selectTaskById, toogleTaskStatus } from "../../features/tasks/TasksSlice";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
-import { colors, radius, screenStyles, shadows, spacing, statusColor, textSize } from "../../theme";
+import { colors, fonts, radius, screenStyles, shadows, spacing, statusColor, textSize } from "../../theme";
 
 // Tipo mínimo para poder reutilizar esta pantalla en cualquier stack (Tasks, Calendar, Profile)
 type TaskDetailOnlyParamList = {
@@ -22,6 +23,9 @@ const TaskDetailScreen = ({navigation,route}:Props) => {
 
   const handleToogle = ()=>{
     dispatch(toogleTaskStatus(task.id))
+    if (task.status != 'Completado') {
+        dispatch(updateStreak())      // solo si la estás completando
+    }
   }
 const handleDelete =()=>{
   dispatch(deleteTask(task.id))
@@ -37,13 +41,13 @@ const handleDelete =()=>{
         <Text style={styles.title}>{task.title}</Text>
         <View style={styles.containerDetail}>
           <View style={[styles.detail, { borderBottomWidth: 1, borderBottomColor: '#CFCFCF', paddingBottom: 12 }]}>
-            <Text>Categoría</Text>
+            <Text style={{fontFamily:fonts.Intersemibold, color:colors.text}}>Categoría</Text>
             <View style={[styles.button, styles.buttonCategory]}>
               <Text style={[styles.textButton, { fontWeight: 600 }]}>{task.category}</Text>
             </View>
           </View>
           <View style={styles.detail}>
-            <Text>Fecha</Text>
+            <Text style={{fontFamily:fonts.Intersemibold, color:colors.text}}>Fecha</Text>
             <View style={[styles.button,  styles.buttonCategory]}>
               <Text style={[styles.textButton, { fontWeight: 600 }]}>{task.date}</Text>
             </View>
@@ -106,13 +110,13 @@ const styles = StyleSheet.create({
   },
   textButton: {
     fontSize: textSize.text,
-    fontWeight: 700,
-    color: colors.textGray
+    color: colors.textGray,
+    fontFamily:fonts.Intersemibold,
   },
   title: {
     color: colors.text,
-    fontSize: textSize.title + 4,
-    fontWeight: "bold"
+    fontSize: textSize.title + 2,
+    fontFamily:fonts.Interbold,
   },
   containerDetail: {
     width: '100%',
@@ -135,12 +139,13 @@ const styles = StyleSheet.create({
   subtitle: {
     color: colors.text,
     fontSize: textSize.title,
-    fontWeight: 'bold'
+    fontFamily:fonts.Intersemibold
   },
   description:{
     color:colors.text,
     fontSize:textSize.text+1,
-    lineHeight:spacing.xl
+    lineHeight:spacing.xl,
+    fontFamily:fonts.Interregular
   },
   buttonAction: {
     flexDirection: 'row',
@@ -153,7 +158,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: textSize.subTitle,
-    fontWeight: 'bold'
+    fontFamily:fonts.Intersemibold
   },
   actionUndo: {
     backgroundColor: colors.purple
