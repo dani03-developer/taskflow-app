@@ -4,15 +4,15 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { categories } from "../data";
 import { addTask, getTodayString } from '../features/tasks/TasksSlice';
 import { useAppDispatch } from '../store/hooks/hooks';
-import { colors, radius, textSize } from "../theme";
+import { colors, fonts, radius, textSize } from "../theme";
 import type { Category } from '../types';
 import CalendarComponent from './Calendar';
 type Props = {
     visibleForm: boolean
     onClose: () => void
-    
+
 }
-const TaskForm = ({ visibleForm, onClose}: Props) => {
+const TaskForm = ({ visibleForm, onClose }: Props) => {
     const dispatch = useAppDispatch()
     const insets = useSafeAreaInsets();
     const [title, setTitle] = useState("")
@@ -62,12 +62,12 @@ const TaskForm = ({ visibleForm, onClose}: Props) => {
     const handleAddTask = () => {
 
         if (isButtonDisabled || !fecha) return //se sale de la función
-       dispatch(addTask({
+        dispatch(addTask({
             title,
             description,
             category,
             date: formatDateString(fecha)
-       }))
+        }))
 
         Alert.alert('Éxito', 'Tarea capturada localmente.')
 
@@ -76,6 +76,7 @@ const TaskForm = ({ visibleForm, onClose}: Props) => {
         setCategory(categories[0])
         setFecha(null)
         setFechaTouched(false)
+        onClose();
     }
 
     return (
@@ -234,7 +235,7 @@ const styles = StyleSheet.create({
     },
     fromText: {
         fontSize: textSize.title,
-        fontWeight: 'bold'
+        fontFamily: fonts.Interbold,
     },
     input: {
         height: 40,
@@ -243,11 +244,12 @@ const styles = StyleSheet.create({
         width: '100%',
         borderRadius: radius.md,
         backgroundColor: colors.softGray,
-        color: colors.text
+        color: colors.text,
+        fontFamily: fonts.Intermedium,
     },
     inputFocused: {
         borderColor: colors.darkGray,
-        borderWidth:1
+        borderWidth: 1
     },
 
     inputError: {
@@ -261,6 +263,7 @@ const styles = StyleSheet.create({
 
     error: {
         color: colors.textRed,
+        fontFamily: fonts.Intermedium,
         marginTop: -6
     },
 
@@ -291,7 +294,7 @@ const styles = StyleSheet.create({
 
     categoryText: {
         color: colors.textGray,
-        fontWeight: '600'
+        fontFamily: fonts.Intersemibold,
     },
 
     fechaButton: {
@@ -305,7 +308,7 @@ const styles = StyleSheet.create({
     },
     fechaText: {
         color: colors.textGray,
-        fontWeight: '600'
+        fontFamily: fonts.Intersemibold,
     },
     button: {
         marginTop: 10,
@@ -318,23 +321,17 @@ const styles = StyleSheet.create({
     buttonDisabled: {
         backgroundColor: colors.softGray,
         color: colors.textGray,
-        fontWeight: '700',
+        fontFamily: fonts.Interbold,
         fontSize: 16
 
     },
 
     buttonText: {
         color: colors.textPurple,
-        fontWeight: '700',
+        fontFamily: fonts.Interbold,
         fontSize: textSize.subTitle
     },
 
-
-    sectionTitle: {
-        fontSize: textSize.subTitle,
-        fontWeight: '700',
-        color: colors.text
-    },
     backdrop: {
         flex: 1,
         backgroundColor: colors.backColor,

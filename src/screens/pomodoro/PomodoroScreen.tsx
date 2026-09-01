@@ -1,3 +1,4 @@
+import RulerPickerTime from "@/src/components/RulerPickerTime";
 import { Lucide } from "@react-native-vector-icons/lucide";
 import LottieView from 'lottie-react-native';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -6,9 +7,8 @@ import Animated, { useAnimatedProps, useSharedValue, withTiming } from 'react-na
 import { Circle, Svg } from 'react-native-svg';
 import { completarPomodoro } from "../../features/pomodoro/PomodoroSlice";
 import { updateStreak } from '../../features/streak/streakSlice';
-import { useAppDispatch } from "../../store/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import { colors, fonts, radius, screenStyles, spacing, textSize } from '../../theme';
-
 const { width } = Dimensions.get('window')
 const strokeWidth = 20
 const svgSize = width * 0.9 //el circulo ocupará el 90% de la pantalla
@@ -19,7 +19,8 @@ const AnimatedCircle = Animated.createAnimatedComponent(Circle)
 const PomodoroScreen = () => {
   const dispatch = useAppDispatch()
   const animatedOffset = useSharedValue(0)
-  const workTime = 5 * 60; //minutos está en segundos
+  const time = useAppSelector((state) => state.pomodoro.time)
+  const workTime =time * 60; //minutos está en segundos
   const [isRuning, setRun] = useState(false)
   const [segundos, setSegundos] = useState(workTime)
   const minutos = Math.floor(segundos / 60)
@@ -28,6 +29,7 @@ const PomodoroScreen = () => {
   const progress = Math.round((segundos * 100) / workTime)
   const animationRef = useRef<LottieView>(null)
   const actualScene = useRef(0)
+  const [formOpen, setFormOpen] = useState(false)
   useEffect(() => {
     if (!isRuning) return
 
@@ -43,9 +45,13 @@ const PomodoroScreen = () => {
     dispatch(updateStreak())
   }, [segundos, workTime])
   useEffect(() => {
+    if (isRuning) return
+    setSegundos(workTime)
+  }, [workTime])
+  useEffect(() => {
     const target = circumference * (segundos / workTime)
     animatedOffset.value = withTiming(target, { duration: 1000 })  // 1s = el hueco entre segundos
-  }, [segundos])
+  }, [segundos, workTime])
 
   const animatedProps = useAnimatedProps(() => ({
     strokeDashoffset: animatedOffset.value
@@ -122,7 +128,10 @@ const PomodoroScreen = () => {
           />
         </View>
       </View>
-      <Text style={styles.min}>{tiempo} min</Text>
+      <TouchableOpacity onPress={() => setFormOpen(true)}>
+         <Text style={styles.min}>{tiempo} min</Text>
+      </TouchableOpacity>
+
       {!isRuning && segundos === workTime ? <TouchableOpacity //lo que sea que esté en isRuning para que aparezca el empezar debe ser false
         activeOpacity={0.85}
         style={[styles.button, { backgroundColor: colors.purple, }]}
@@ -147,6 +156,10 @@ const PomodoroScreen = () => {
             <Lucide name="rotate-ccw" size={25} color={colors.textRed} />
           </TouchableOpacity>
         </View>}
+        <RulerPickerTime
+          onClose={() => setFormOpen(false)}
+          visibleForm={formOpen}
+        />
     </View>
   )
 }
