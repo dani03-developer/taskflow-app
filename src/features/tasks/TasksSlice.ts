@@ -1,5 +1,4 @@
 import { createSelector, createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit'
-import { SEED_TASKS } from '../../data'
 import type { RootState } from '../../store'
 import type { Task } from '../../types'
 export type taskFilter = 'todo' | 'completed' | 'pending' //tipos literales
@@ -14,7 +13,7 @@ type TaskState ={
     filter:taskFilter
 }
 const initialState: TaskState={
-    items: SEED_TASKS,
+    items: [],
     filter:'todo'
 }
 const taskSlice =  createSlice({
@@ -30,6 +29,9 @@ const taskSlice =  createSlice({
                 state.items.unshift(action.payload) //posiciona la tarea arriba de todo
             }
         },
+        setTasks:(state,action: PayloadAction<Task[]>)=>{
+            state.items = action.payload
+        },
         toogleTaskStatus:(state, action: PayloadAction<string>)=>{
             const task =state.items.find((task) =>task.id === action.payload)
               if (!task) return
@@ -43,7 +45,7 @@ const taskSlice =  createSlice({
         }
     }
 })
-export const {addTask,toogleTaskStatus,deleteTask,setFilter}=taskSlice.actions
+export const {addTask,toogleTaskStatus,deleteTask,setFilter, setTasks}=taskSlice.actions
 export default taskSlice.reducer
 
 //SELECTORES

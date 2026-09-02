@@ -8,10 +8,13 @@ import FilterBar from '../../components/FilterBar';
 import Header from "../../components/Header";
 import TaskForm from "../../components/TaskForm";
 import TaskList from "../../components/TaskList";
-import { selectFilter, selectFilteredTask } from "../../features/tasks/TasksSlice";
-import { useAppSelector } from "../../store/hooks/hooks";
+import { selectCurrentUser } from '../../features/auth/AuthSlice';
+import { selectFilter, selectFilteredTask, setTasks } from "../../features/tasks/TasksSlice";
+import { subscribeToTasks } from '../../services/tasks/tasksService';
+import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import { screenStyles } from "../../theme";
 import { TasksStackParamList } from '../../types/index';
+
 type NavigationProp = NativeStackNavigationProp<
   TasksStackParamList,
   'Tasks'
@@ -19,9 +22,25 @@ type NavigationProp = NativeStackNavigationProp<
 type TasksRouteProp = RouteProp<TasksStackParamList, 'Tasks'>
 const TasksScreen = ({ navigation, route }: { navigation: NavigationProp, route: TasksRouteProp }) => {
   const name = 'Dani'
+  const dispatch = useAppDispatch()
+  const user = useAppSelector(selectCurrentUser)
   const tasks = useAppSelector(selectFilteredTask)
   const filter = useAppSelector(selectFilter)
   const [formOpen, setFormOpen] = useState(false)
+
+  useEffect(() => {
+    if (!user) return
+
+    const unsubscribe = subscribeToTasks(
+      user.uid,
+      (tasks) => {
+        dispatch(setTasks(tasks))
+      }
+    )
+
+    return unsubscribe
+  }, [user, dispatch])
+
   useEffect(() => { //venimos del botón '+' del TabNavigator, abrimos el form y limpiamos el param
     if (route.params?.openForm) {
       setFormOpen(true)

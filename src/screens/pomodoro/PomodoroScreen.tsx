@@ -30,6 +30,7 @@ const PomodoroScreen = () => {
   const animationRef = useRef<LottieView>(null)
   const actualScene = useRef(0)
   const [formOpen, setFormOpen] = useState(false)
+  
   useEffect(() => {
     if (!isRuning) return
 
@@ -39,32 +40,38 @@ const PomodoroScreen = () => {
 
     return () => clearInterval(intervalo)   // limpieza al desmontar
   }, [isRuning])
+
   useEffect(() => {
     if (segundos > 0) return
     dispatch(completarPomodoro(workTime / 60))
     dispatch(updateStreak())
   }, [segundos, workTime])
+
   useEffect(() => {
     if (isRuning) return
     setSegundos(workTime)
   }, [workTime])
+
   useEffect(() => {
     const target = circumference * (segundos / workTime)
     animatedOffset.value = withTiming(target, { duration: 1000 })  // 1s = el hueco entre segundos
-  }, [segundos, workTime])
+  }, [segundos,workTime])
 
   const animatedProps = useAnimatedProps(() => ({
     strokeDashoffset: animatedOffset.value
   }))
+
   const onPressStart = useCallback(() => {
     setRun(true)
   }, [segundos])
+
   const onPressRestart = useCallback(() => {
     setRun(false)
     setSegundos(workTime)
     animationRef.current?.reset()
     actualScene.current = 0
-  }, [])
+  }, [workTime])
+
   useEffect(() => {
     if (isRuning) {
       if (progress <= 66 && progress > 33 && actualScene.current < 1) {

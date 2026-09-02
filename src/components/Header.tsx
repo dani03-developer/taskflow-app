@@ -6,7 +6,7 @@ type ProfileProps = {
     name: string,
     image: ImageSourcePropType,
 }
-
+//falta crear CreateProfileScreen para modificar el name (en progreso)
 const Header = ({ name, image }: ProfileProps) => {
     return (
         <>
@@ -18,7 +18,7 @@ const Header = ({ name, image }: ProfileProps) => {
                     style={styles.avatarHeader}
                 />
                 <View style={styles.containerData}>
-                    <Text style={styles.gettingText}>Hola {name}!</Text>
+                    <Text style={styles.gettingText}>Hola {name}!</Text> 
                     <Text style={styles.text}>Seguimos avanzando?</Text>
                 </View>
             </View>

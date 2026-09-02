@@ -2,11 +2,10 @@ import { Lucide } from "@react-native-vector-icons/lucide";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { updateStreak } from "../../features/streak/streakSlice";
-import { deleteTask, isPending, selectTaskById, toogleTaskStatus } from "../../features/tasks/TasksSlice";
+import { isPending, selectTaskById } from "../../features/tasks/TasksSlice";
+import { removeTask, updateTaskStatus } from "../../services/tasks/tasksService";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import { colors, fonts, radius, screenStyles, shadows, spacing, statusColor, textSize } from "../../theme";
-
-// Tipo mínimo para poder reutilizar esta pantalla en cualquier stack (Tasks, Calendar, Profile)
 type TaskDetailOnlyParamList = {
   TaskDetail: { taskId: string }
 }
@@ -21,16 +20,35 @@ const TaskDetailScreen = ({navigation,route}:Props) => {
   const estadoVisual = isPending(task) ? 'Pendiente' : task.status
   const { background, text } = statusColor[estadoVisual]
 
-  const handleToogle = ()=>{
-    dispatch(toogleTaskStatus(task.id))
-    if (task.status != 'Completado') {
+  const handleToogle = async ()=>{
+    try{
+      const nuevoEstado = task.status === 'Completado' ? 'Por Hacer' : 'Completado'
+      await updateTaskStatus(
+        task.id,
+        nuevoEstado
+      )
+      if (nuevoEstado === 'Completado') {
         dispatch(updateStreak())      // solo si la estás completando
+      }
+    } catch (error){
+      console.error(
+        'Error al actualizar tarea: ', error
+      )
     }
   }
-const handleDelete =()=>{
-  dispatch(deleteTask(task.id))
-  navigation.goBack()
+ const handleDelete = async () => {
+  try {
+    await removeTask(task.id)
+
+    navigation.goBack()
+  } catch (error) {
+    console.error(
+      'Error al eliminar tarea:',
+      error
+    )
+  }
 }
+
   return (
     <View style={[screenStyles.container, screenStyles.spacingContainer]}>
       <Pressable style={styles.buttonBack} onPress={()=>navigation.goBack()}><Lucide name="chevron-left" size={20} color={colors.textGray} /></Pressable>

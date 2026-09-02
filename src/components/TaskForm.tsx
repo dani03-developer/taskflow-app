@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { categories } from "../data";
-import { addTask, getTodayString } from '../features/tasks/TasksSlice';
-import { useAppDispatch } from '../store/hooks/hooks';
+import { selectCurrentUser } from '../features/auth/AuthSlice';
+import { getTodayString } from '../features/tasks/TasksSlice';
+import { createTask } from '../services/tasks/tasksService';
+import { useAppDispatch, useAppSelector } from '../store/hooks/hooks';
 import { colors, fonts, radius, textSize } from "../theme";
 import type { Category } from '../types';
 import CalendarComponent from './Calendar';
@@ -15,6 +17,7 @@ type Props = {
 const TaskForm = ({ visibleForm, onClose }: Props) => {
     const dispatch = useAppDispatch()
     const insets = useSafeAreaInsets();
+    const user = useAppSelector(selectCurrentUser);
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
     const [category, setCategory] = useState<Category>( //definimos el tipo en este caso typescript
@@ -58,25 +61,28 @@ const TaskForm = ({ visibleForm, onClose }: Props) => {
     const formatDateString = (date: Date) => {
         return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     };
-
-    const handleAddTask = () => {
-
-        if (isButtonDisabled || !fecha) return //se sale de la función
-        dispatch(addTask({
-            title,
-            description,
-            category,
-            date: formatDateString(fecha)
-        }))
-
-        Alert.alert('Éxito', 'Tarea capturada localmente.')
-
+    const handleAddTask = async () => {
+        if (isButtonDisabled || !fecha || !user) return //se sale de la función
+        try {
+            await createTask(
+            {
+                title,
+                description,
+                category,
+                date: formatDateString(fecha),
+                status: 'Por Hacer'
+            },
+                user.uid
+            )
         setTitle('')
         setDescription('')
         setCategory(categories[0])
         setFecha(null)
         setFechaTouched(false)
         onClose();
+        }catch (error) {
+            console.error('Error al crear la tarea:', error);
+        }
     }
 
     return (

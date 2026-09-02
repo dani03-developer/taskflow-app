@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { StyleSheet } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
-import AppNavigator from "../../src/navigation/AppNavigator";
+import RootNavigator from "../../src/navigation/RootNavigator";
 import { store } from '../../src/store/';
 SplashScreen.preventAutoHideAsync();
 export default function App() {
@@ -32,7 +32,7 @@ export default function App() {
       <SafeAreaProvider>
         <StatusBar style='dark' />
         <SafeAreaView style={styles.safe} edges={['top']}>
-          <AppNavigator />
+          <RootNavigator />
         </SafeAreaView>
       </SafeAreaProvider>
     </Provider>

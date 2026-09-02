@@ -2,11 +2,12 @@ import { Lucide } from "@react-native-vector-icons/lucide";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import LottieView from 'lottie-react-native';
 import { useCallback, useEffect, useRef } from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from 'react-redux';
 import avatar from '../../assets/fem.png';
-import TaskList from "../../components/TaskList";
+import CardTask from '../../components/CardTask';
 import { selectPendingTasks, selectTaskStats } from "../../features/tasks/TasksSlice";
+import { logout } from '../../services/auth/authService';
 import type { RootState } from '../../store';
 import { useAppSelector } from "../../store/hooks/hooks";
 import { colors, fonts, radius, screenStyles, shadows, spacing, textSize } from "../../theme";
@@ -15,11 +16,11 @@ type Props = NativeStackScreenProps<ProfileStackParamList, 'Profile'>
 const ProfileScreen = ({ navigation }: Props) => {
   const { pending, completed } = useAppSelector(selectTaskStats)
   const pendingTasks = useAppSelector(selectPendingTasks)
-  const { completados, minutosTotales } = useSelector((state: RootState) => state.pomodoro) //accede a los estados de completado y minutos totales a través de store
-  const streak = useAppSelector((state) => state.streak.contador)
+  const {minutosTotales } = useSelector((state: RootState) => state.pomodoro) //accede a los estados de completado y minutos totales a través de store
   const workTime = 8 //hs
-  const workTimetoMin = 8 *60 //hs
-  const progress = minutosTotales === 0 ? 0 : Math.min(100,Math.round((minutosTotales*100)/workTimetoMin))
+  const workTimetoMin = 8 * 60 //hs
+  const progress = minutosTotales === 0 ? 0 : Math.min(100, Math.round((minutosTotales * 100) / workTimetoMin))
+ const streak = useAppSelector(state => state.streak.contador)
   const handleTaskPress = useCallback(
     (taskId: string) => {
       navigation.navigate('TaskDetail', { taskId })
@@ -28,14 +29,26 @@ const ProfileScreen = ({ navigation }: Props) => {
   const animationRef = useRef<LottieView>(null)
 
   useEffect(() => {
-    if (streak > 0 ) {
+    if (streak>0) {
       animationRef.current?.play(8, 209) //hay racha? bueno se muestra a partir del frame 8 en adelante
     } else {
       animationRef.current?.reset() //no hay? se muestra el frame gris 0
     }
-  }, [completados])
+  }, [streak])
+
+  const handleLogout = async () => {
+    try {
+      await logout()
+    } catch (error) {
+      console.error(
+        'Error al cerrar sesión:',
+        error
+      )
+    }
+  }
+
   return (
-    <View style={screenStyles.container}>
+    <ScrollView style={{backgroundColor:colors.backgroundColor}}>
       <View style={screenStyles.spacingContainer}>
         <View style={styles.header}>
           <Text style={styles.title}>Perfil</Text>
@@ -66,23 +79,39 @@ const ProfileScreen = ({ navigation }: Props) => {
               <Text style={[styles.numbers, { color: colors.textOrange, fontSize: textSize.bigTitle }]}>{pending}</Text>
             </View>
           </View>
-            <View style={styles.progressCard}>
-        <View style={styles.progressHeader}>
-          <Text style={styles.progressLabel}>Progreso pomodoro</Text>
-          <Text style={styles.progressValue}>{progress}%</Text>
+          <View style={styles.progressCard}>
+            <View style={styles.progressHeader}>
+              <Text style={styles.progressLabel}>Progreso pomodoro</Text>
+              <Text style={styles.progressValue}>{progress}%</Text>
+            </View>
+            <View style={styles.progressTrack}>
+              <View style={[styles.progressFill, { width: `${progress}%` }]} />
+            </View>
+            <View style={styles.progressHeader}>
+              <Text style={styles.progressLabel}>Tiempo estudiado: {minutosTotales}min</Text>
+              <Text style={styles.progressLabel}>Meta: {workTime}hs</Text>
+            </View>
+          </View>
         </View>
-        <View style={styles.progressTrack}>
-          <View style={[styles.progressFill, { width: `${progress}%` }]} />
+        {pending>0 ? pendingTasks.map((task) => (
+         <CardTask key={task.id} task={task} onPress={(t) => handleTaskPress(t.id)} />
+        )): 
+        <View style={styles.container}>
+          <Lucide name="circle-dot-dashed" size={textSize.bigTitle} color={colors.darkGray} />
+          <Text style={styles.titleMessage}>¡Bien Hecho! No tienes tareas pendientes</Text>
+          <Text style={styles.subtitle}>Las tareas vencidas aparecerán aquí</Text>
         </View>
-         <View style={styles.progressHeader}>
-          <Text style={styles.progressLabel}>Tiempo estudiado: {minutosTotales}min</Text>
-          <Text style={styles.progressLabel}>Meta: {workTime}hs</Text>
-        </View>
+        }
+      <TouchableOpacity
+        style={styles.logoutButton}
+        onPress={handleLogout}
+      >
+        <Text style={styles.logoutText}>
+          Cerrar sesión
+        </Text>
+      </TouchableOpacity>
       </View>
-        </View>
-      </View>
-      <TaskList tasks={pendingTasks} filter="pending" onTaskPress={handleTaskPress} />
-    </View>
+    </ScrollView>
   );
 };
 
@@ -137,19 +166,19 @@ const styles = StyleSheet.create({
     color: colors.textGray
   },
   text: {
-    fontSize: textSize.textMin+1,
+    fontSize: textSize.textMin + 1,
     fontFamily: fonts.Intersemibold,
     color: colors.textGray
   },
   progressCard: {
-    width:'100%',
+    width: '100%',
     backgroundColor: colors.backgroundColor,
     borderRadius: radius.md,
     padding: spacing.lg,
     gap: spacing.sm,
     shadowColor: shadows.shadowColor,
     shadowOffset: shadows.shadowOffset,
-    shadowOpacity: shadows.shadowOpacity,      
+    shadowOpacity: shadows.shadowOpacity,
     shadowRadius: shadows.shadowRadius,
     elevation: shadows.elevation,
   },
@@ -179,6 +208,40 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
     backgroundColor: colors.green
   },
+  logoutButton: {
+    marginTop: spacing.xl,
+    paddingVertical: spacing.md,
+    borderRadius: radius.md,
+    backgroundColor: colors.text,
+    alignItems: 'center',
+  },
+
+  logoutText: {
+    color: colors.backgroundColor,
+    fontWeight: '800',
+    fontSize: 15,
+  },
+   container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical:spacing.xxl+4,
+    paddingHorizontal:spacing.md,
+    gap: spacing.sm
+  },
+  titleMessage: {
+    fontSize: textSize.title,
+    fontFamily: fonts.Interbold,
+    color: colors.darkGray,
+    textAlign: 'center',
+
+  },
+  subtitle: {
+    fontSize: textSize.subTitle,
+    color: colors.darkGray,
+    textAlign: 'center',
+    fontFamily: fonts.Intermedium,
+  }
 });
 
 export default ProfileScreen;

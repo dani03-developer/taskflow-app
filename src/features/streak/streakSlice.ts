@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { getTodayString } from '../tasks/TasksSlice'
 type streakState = {
     contador: number
@@ -18,6 +18,10 @@ const streakSlice = createSlice({
     name: 'streak',
     initialState,
     reducers: {
+        setStreak: (state, action: PayloadAction<{ contador: number; ultimaFecha: string | null }>) => {
+            state.contador = action.payload.contador;
+            state.ultimaFecha = action.payload.ultimaFecha;
+        },
         updateStreak: (state) => {
             const today = getTodayString()
             const yesterday = getyesterdayString()
@@ -27,14 +31,18 @@ const streakSlice = createSlice({
             }
 
             if (state.ultimaFecha === yesterday) {
-                state.contador += 1       
+                state.contador += 1
             } else {
                 state.contador = 1        //sino se corta la racha
             }
 
             state.ultimaFecha = today        // actualiza la fecha 
+        },
+        resetStreak: (state) => {
+            state.contador = 0
+            state.ultimaFecha = null
         }
     }
 })
-export const { updateStreak } = streakSlice.actions
+export const { setStreak, updateStreak, resetStreak } = streakSlice.actions
 export default streakSlice.reducer
