@@ -1,30 +1,47 @@
-import { Lucide } from "@react-native-vector-icons/lucide";
+import { Lucide, type LucideIconName } from "@react-native-vector-icons/lucide";
 import { useState } from 'react';
-import { Dimensions, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { RulerPicker } from 'react-native-ruler-picker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { changeTime } from '../features/pomodoro/PomodoroSlice';
-import { useAppDispatch, useAppSelector } from '../store/hooks/hooks';
 import { colors, fonts, radius, textSize } from '../theme';
-type Props = {
-  visibleForm: boolean
-  onClose: () => void
 
+type Props = {
+  visible: boolean
+  onClose: () => void
+  onConfirm: (value: number) => void
+  initialValue: number
+  min?: number
+  max?: number
+  step?: number
+  unit?: string
+  title?: string
+  iconName?: LucideIconName
 }
-const screenWidth = Dimensions.get('window').width;
-const RulerPickerTime = ({ visibleForm, onClose }: Props) => {
+
+const RulerPickerTime = ({
+  visible,
+  onClose,
+  onConfirm,
+  initialValue,
+  min = 10,
+  max = 180,
+  step = 5,
+  unit = 'min',
+  title = 'Tiempo',
+  iconName = 'timer',
+}: Props) => {
   const insets = useSafeAreaInsets();
-  const currentTime = useAppSelector((state) => state.pomodoro.time);
-  const [time, setTime] = useState(currentTime);
-  const dispatch = useAppDispatch();
-  const handleAddTime = () => {
-    dispatch(changeTime(time));
+  const [value, setValue] = useState(initialValue);
+
+  const handleConfirm = () => {
+    onConfirm(value);
     onClose();
   }
+
   return (
     <Modal
       animationType='slide'
-      visible={visibleForm}
+      visible={visible}
       transparent
     >
       <View style={styles.overlay}>
@@ -36,18 +53,18 @@ const RulerPickerTime = ({ visibleForm, onClose }: Props) => {
         >
           <View style={styles.form}>
             <View style={styles.grabber} />
-            <Text style={styles.title}>StopWatch</Text>
-            <Lucide name={'timer'} style={[styles.title, { fontSize: 30 }]} />
+            <Text style={styles.title}>{title}</Text>
+            <Lucide name={iconName} style={[styles.title, { fontSize: 30 }]} />
             <View style={{ alignItems: 'center', marginTop: 20 }}>
               <RulerPicker
-                key={visibleForm ? currentTime : 'closed'}
-                min={10}
-                max={180}
-                step={5}
+                key={visible ? initialValue : 'closed'}
+                min={min}
+                max={max}
+                step={step}
                 fractionDigits={0}
-                initialValue={currentTime}
-                onValueChangeEnd={(number) => setTime(Number(number))}
-                unit="min"
+                initialValue={initialValue}
+                onValueChangeEnd={(number) => setValue(Number(number))}
+                unit={unit}
                 height={70}
                 indicatorHeight={50}
                 shortStepHeight={20}
@@ -57,7 +74,7 @@ const RulerPickerTime = ({ visibleForm, onClose }: Props) => {
             </View>
 
             <TouchableOpacity
-              onPress={handleAddTime}
+              onPress={handleConfirm}
               activeOpacity={0.85}
               style={styles.button}
             >

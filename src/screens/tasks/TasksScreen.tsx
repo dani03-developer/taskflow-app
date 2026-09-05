@@ -3,7 +3,6 @@ import { RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
-import Bep from '../../assets/Bep.png';
 import FilterBar from '../../components/FilterBar';
 import Header from "../../components/Header";
 import TaskForm from "../../components/TaskForm";
@@ -57,7 +56,7 @@ const TasksScreen = ({ navigation, route }: { navigation: NavigationProp, route:
     <>
       <View style={[screenStyles.container]}>
         <View style ={screenStyles.spacingContainer}>
-          <Header name={name} image={Bep}></Header>
+          <Header></Header>
           <WeekCalendar />
           <FilterBar />
         </View>

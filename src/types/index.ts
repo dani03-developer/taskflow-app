@@ -11,6 +11,12 @@ export type Task ={ //defino un objeto de tipo Task y sus propiedades
     date: string | null,
     status: StatusGuardado
 }
+export type userProfile ={
+    avatar:boolean, //true bep verde false bep rosa
+    name: string,
+    career: string,
+    studygoal: number,
+}
 export type TasksStackParamList ={
     Tasks: { openForm?: boolean } | undefined
     TaskDetail: {

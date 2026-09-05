@@ -28,7 +28,7 @@ const TaskList = ({ tasks, filter, onTaskPress }: TaskListProps) => {
       keyExtractor={keyExtractor}
       renderItem={renderItem}
       ListEmptyComponent={<EmptyState filter={filter} />}
-      contentContainerStyle={{ flexGrow: 1, gap: 8, alignItems: 'center', paddingHorizontal: spacing.md }}
+      contentContainerStyle={{ flexGrow: 1, gap: 8, alignItems: 'center', paddingHorizontal: spacing.xl }}
       showsVerticalScrollIndicator={false}
 
       initialNumToRender={8} //cantidad de tarjetas a renderizar

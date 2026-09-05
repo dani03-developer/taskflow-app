@@ -1,8 +1,9 @@
+import { colors, fonts, textSize } from '@/src/theme'
+import LottieView from 'lottie-react-native'
 import { useState } from 'react'
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
-
+import { ActivityIndicator, ImageBackground, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import image from '../../assets/backgroundLogin.png'
 import { signIn } from '../../services/auth/authService'
-
 type Props = {
   navigation: any
 }
@@ -11,10 +12,10 @@ const LoginScreen = ({ navigation }: Props) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-
+  const [loading, setLoading] = useState(false);
   const handleLogin = async () => { //asyncpermite ejecutar operaciones que toman tiempo sin bloquear el hilo principal, devolviendo siempre una promesa.
     setError('')
-
+    setLoading(true)
     if (!email.trim() || !password) {
       setError('Completá email y contraseña')
       return
@@ -29,46 +30,60 @@ const LoginScreen = ({ navigation }: Props) => {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>TaskFlow</Text>
-      <Text style={styles.subtitle}>Iniciar sesión</Text>
+    <View style={{ flex: 1, backgroundColor: colors.backgroundColor }}>
+      <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+        <View style={styles.container}>
+          <View style={styles.lottieWrapper}>
+            <LottieView
+              source={require('../../assets/lotties/animacionLogin.json')}
+              autoPlay
+              resizeMode='cover'
+              loop
+              style={{ width: '100%', height: '100%'}}
+            />
+          </View>
+          <View style={styles.form}>
+            <Text style={styles.subtitle}>Gmail:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+            <Text style={styles.subtitle}>Contraseña:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Contraseña"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        autoCorrect={false}
-      />
+            {error ? (
+              <Text style={styles.error}>{error}</Text>
+            ) : null}
 
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
+            <Pressable
+              style={styles.button}
+              disabled={loading}
+              onPress={handleLogin}
+            >
+              <Text style={styles.buttonText}>{loading ? <ActivityIndicator color={colors.backgroundColor}/>: "Iniciar Sesión"}</Text>
+            </Pressable>
 
-      {error ? (
-        <Text style={styles.error}>{error}</Text>
-      ) : null}
-
-      <Pressable
-        style={styles.button}
-        onPress={handleLogin}
-      >
-        <Text style={styles.buttonText}>Ingresar</Text>
-      </Pressable>
-
-      <Pressable
-        onPress={() => navigation.navigate('Register')}
-      >
-        <Text style={styles.link}>
-          ¿No tenés una cuenta? Registrate
-        </Text>
-      </Pressable>
+            <Pressable
+              onPress={() => navigation.navigate('Register')}
+            >
+              <Text style={styles.link}>
+                ¿No tenés una cuenta? Registrate
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      </ImageBackground>
     </View>
   )
 }
@@ -76,35 +91,40 @@ const LoginScreen = ({ navigation }: Props) => {
 export default LoginScreen
 
 const styles = StyleSheet.create({
-  container: {
+  image: {
     flex: 1,
     justifyContent: 'center',
-    padding: 24,
   },
-
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 8,
+  container: {
+    flex: 1,
+  },
+  lottieWrapper: {
+    height:'60%',
+    justifyContent: 'center',
+    paddingTop:10,
+  },
+  form: {
+    flex: 1,
+    alignContent: 'flex-start',
+    paddingHorizontal: 24,
+    gap: 5
   },
 
   subtitle: {
-    fontSize: 20,
-    textAlign: 'center',
-    marginBottom: 32,
+    fontSize: textSize.subTitle,
+    fontFamily: fonts.Interbold,
+    color: colors.text
   },
 
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
+    backgroundColor: colors.backgroundColor,
     borderRadius: 8,
     padding: 12,
-    marginBottom: 12,
+    marginBottom: 5,
   },
 
   button: {
-    backgroundColor: '#222',
+    backgroundColor: colors.text,
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
@@ -113,16 +133,18 @@ const styles = StyleSheet.create({
   },
 
   buttonText: {
-    color: '#fff',
+    color: colors.backgroundColor,
     fontWeight: 'bold',
   },
 
   link: {
     textAlign: 'center',
+    fontFamily: fonts.Interregular
   },
 
   error: {
-    color: 'red',
+    color: colors.textRed,
     marginBottom: 8,
+    fontFamily: fonts.Interregular
   },
 })

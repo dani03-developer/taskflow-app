@@ -19,6 +19,7 @@ export default function App() {
 
   useEffect(() => {
     if (loaded || error) {
+      console.log('ocultando splash nativo')
       SplashScreen.hideAsync();   // ya cargaron: ocultá el splash
     }
   }, [loaded, error]);

@@ -39,7 +39,7 @@ const CardTask = memo(function CardTask({ task, onPress}: CardTaskProps) {
 })
 const styles = StyleSheet.create({
   cardTask: {
-    width: '92%',
+    width: '100%',
     backgroundColor: colors.backgroundColor,
     shadowColor: shadows.shadowColor,
     shadowOffset: shadows.shadowOffset,

@@ -9,7 +9,7 @@ const initialState: streakState = {
     contador: 0,
     ultimaFecha: null
 }
-const getyesterdayString = () => {
+export const getyesterdayString = () => {
     const d = new Date()
     d.setDate(d.getDate() - 1)   // retroceder un día (como en el WeekCalendar)
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`

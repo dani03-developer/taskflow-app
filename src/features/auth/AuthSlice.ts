@@ -11,7 +11,7 @@ type AuthState = {
 }
 const initialState:AuthState = {
     user:null,
-    isLoading:false
+    isLoading:true
 }
 
 const authSlice = createSlice({

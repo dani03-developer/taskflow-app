@@ -1,12 +1,13 @@
 import { Lucide } from "@react-native-vector-icons/lucide";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import LottieView from 'lottie-react-native';
-import { useCallback, useEffect, useRef } from "react";
-import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from 'react-redux';
-import avatar from '../../assets/fem.png';
+import bep1 from '../../assets/Bep.png';
+import bep2 from '../../assets/bepPink.png';
 import CardTask from '../../components/CardTask';
-import { selectPendingTasks, selectTaskStats } from "../../features/tasks/TasksSlice";
+import { getTodayString, selectPendingTasks, selectTaskStats } from "../../features/tasks/TasksSlice";
 import { logout } from '../../services/auth/authService';
 import type { RootState } from '../../store';
 import { useAppSelector } from "../../store/hooks/hooks";
@@ -17,10 +18,16 @@ const ProfileScreen = ({ navigation }: Props) => {
   const { pending, completed } = useAppSelector(selectTaskStats)
   const pendingTasks = useAppSelector(selectPendingTasks)
   const {minutosTotales } = useSelector((state: RootState) => state.pomodoro) //accede a los estados de completado y minutos totales a través de store
-  const workTime = 8 //hs
-  const workTimetoMin = 8 * 60 //hs
+  const workTime = useAppSelector(state => state.profile.profile?.studygoal) ?? 0 //hs
+  const workTimetoMin = workTime * 60 //hs
   const progress = minutosTotales === 0 ? 0 : Math.min(100, Math.round((minutosTotales * 100) / workTimetoMin))
  const streak = useAppSelector(state => state.streak.contador)
+ const ultimaFecha = useAppSelector(state => state.streak.ultimaFecha)
+ const activeToday = ultimaFecha === getTodayString()
+ const [loading, isLoading]=useState(false)
+ const name = useAppSelector(state => state.profile.profile?.name)
+ const career = useAppSelector(state => state.profile.profile?.career)
+ const avatar = useAppSelector(state => state.profile.profile?.avatar)
   const handleTaskPress = useCallback(
     (taskId: string) => {
       navigation.navigate('TaskDetail', { taskId })
@@ -29,14 +36,15 @@ const ProfileScreen = ({ navigation }: Props) => {
   const animationRef = useRef<LottieView>(null)
 
   useEffect(() => {
-    if (streak>0) {
+    if (activeToday) {
       animationRef.current?.play(8, 209) //hay racha? bueno se muestra a partir del frame 8 en adelante
     } else {
       animationRef.current?.reset() //no hay? se muestra el frame gris 0
     }
-  }, [streak])
+  }, [activeToday])
 
   const handleLogout = async () => {
+    isLoading(true)
     try {
       await logout()
     } catch (error) {
@@ -55,9 +63,9 @@ const ProfileScreen = ({ navigation }: Props) => {
           <Pressable><Lucide name="square-pen" size={textSize.bigTitle} color={'#464455'} /></Pressable>
         </View>
         <View style={styles.containerPerfil}>
-          <Image source={avatar} style={styles.avatarImage} />
-          <Text style={styles.name}>Daniela Machaca</Text>
-          <Text style={styles.career}>Ingeniería en Software</Text>
+          <Image source={avatar ? bep1 : bep2} style={styles.avatarImage} />
+          <Text style={styles.name}>{name}</Text>
+          <Text style={styles.career}>{career}</Text>
           <View style={styles.containerinfo}>
             <View style={styles.containerStreak}>
               <LottieView
@@ -104,10 +112,11 @@ const ProfileScreen = ({ navigation }: Props) => {
         }
       <TouchableOpacity
         style={styles.logoutButton}
+        disabled={loading}
         onPress={handleLogout}
       >
         <Text style={styles.logoutText}>
-          Cerrar sesión
+        {loading ? <ActivityIndicator color={colors.backgroundColor}/>: "Cerrar sesión"}
         </Text>
       </TouchableOpacity>
       </View>

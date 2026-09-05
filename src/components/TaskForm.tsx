@@ -5,7 +5,7 @@ import { categories } from "../data";
 import { selectCurrentUser } from '../features/auth/AuthSlice';
 import { getTodayString } from '../features/tasks/TasksSlice';
 import { createTask } from '../services/tasks/tasksService';
-import { useAppDispatch, useAppSelector } from '../store/hooks/hooks';
+import { useAppSelector } from '../store/hooks/hooks';
 import { colors, fonts, radius, textSize } from "../theme";
 import type { Category } from '../types';
 import CalendarComponent from './Calendar';
@@ -15,7 +15,6 @@ type Props = {
 
 }
 const TaskForm = ({ visibleForm, onClose }: Props) => {
-    const dispatch = useAppDispatch()
     const insets = useSafeAreaInsets();
     const user = useAppSelector(selectCurrentUser);
     const [title, setTitle] = useState("")

@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
 import { Circle, Svg } from 'react-native-svg';
-import { completarPomodoro } from "../../features/pomodoro/PomodoroSlice";
+import { changeTime, completarPomodoro } from "../../features/pomodoro/PomodoroSlice";
 import { updateStreak } from '../../features/streak/streakSlice';
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import { colors, fonts, radius, screenStyles, spacing, textSize } from '../../theme';
@@ -89,6 +89,7 @@ const PomodoroScreen = () => {
     }
   }, [isRuning, progress, segundos])
 
+  
   return (
     <View style={[screenStyles.container, screenStyles.spacingContainer, styles.pomodoroContainer]}>
       <Text style={styles.title}>Focus</Text>
@@ -164,8 +165,10 @@ const PomodoroScreen = () => {
           </TouchableOpacity>
         </View>}
         <RulerPickerTime
+          visible={formOpen}
           onClose={() => setFormOpen(false)}
-          visibleForm={formOpen}
+          onConfirm={(value) => dispatch(changeTime(value))}
+          initialValue={time}
         />
     </View>
   )
