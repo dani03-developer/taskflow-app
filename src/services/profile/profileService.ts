@@ -1,5 +1,5 @@
-import { db } from "@/src/config/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "../../config/firebase";
 import { userProfile } from '../../types/index';
 
 //subimos o guardamos un perfil

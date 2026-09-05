@@ -14,7 +14,7 @@ const profileSlice =  createSlice({
             state.profile = action.payload
         },
         clearProfile: (state) => {
-            state.profile = null   // para el logout, como resetStreak
+            state.profile = null   
         },
     }
 })

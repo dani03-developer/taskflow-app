@@ -1,13 +1,14 @@
 import { onAuthStateChanged } from 'firebase/auth'; //este método se utiliza para escuchar los cambios en el estado de autenticación del usuario en tiempo real. Se suscribe a los cambios de autenticación y ejecuta una función de devolución de llamada cada vez que el estado de autenticación cambia (por ejemplo, cuando un usuario inicia sesión o cierra sesión).
 import { useEffect, useState } from 'react';
-import { ActivityIndicator } from 'react-native';
 import { auth } from '../config/firebase';
 import { selectAuthLoading, selectCurrentUser, setUser } from '../features/auth/AuthSlice';
+import { resetPomodoro, setPomodoro } from '../features/pomodoro/PomodoroSlice';
 import { clearProfile, setProfile } from '../features/porfile/profileSlice';
 import { getyesterdayString, resetStreak, setStreak } from '../features/streak/streakSlice';
 import { getTodayString } from '../features/tasks/TasksSlice';
 import CreateProfileScreen from '../screens/profile/CreateProfileScreen';
 import AnimatedSplashScreen from '../screens/splash/SplashScreen';
+import { getPomodoroData, updatePomodoroInDB } from '../services/pomodoro/pomodoroService';
 import { getProfile } from '../services/profile/profileService';
 import { getStreak, updateStreakInDB } from '../services/streak/streakService';
 import { useAppDispatch, useAppSelector } from '../store/hooks/hooks';
@@ -21,6 +22,9 @@ const RootNavigator = () => {
     const [splashMinTime, setSplashMinTime] = useState(true)
     const profile = useAppSelector((state) => state.profile.profile)
     const hasProfile = profile !== null
+    const streak = useAppSelector((state) => state.streak.contador)
+    const ultimaFecha = useAppSelector((state) => state.streak.ultimaFecha)
+    const minutosTotales = useAppSelector((state) => state.pomodoro.minutosTotales)
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => { //onAuthStateChanged es un listener que se ejecuta cada vez que cambia el estado de autenticación del usuario, ya sea que inicie sesión o cierre sesión. Se pasa la función de devolución de llamada que recibe el objeto user si hay un usuario autenticado o null si no hay usuario.
             if (user) {
@@ -35,6 +39,7 @@ const RootNavigator = () => {
                 dispatch(setUser(null))
                 dispatch(resetStreak())
                 dispatch(clearProfile())
+                dispatch(resetPomodoro())
                 setProfileChecked(false)
             }
         })
@@ -75,6 +80,26 @@ const RootNavigator = () => {
         }
         cargarStreak()
     }, [user])
+    useEffect(() => {
+        if (!user || !ultimaFecha) return
+        updateStreakInDB(user.uid, streak, ultimaFecha)
+    }, [streak, ultimaFecha, user])
+
+    //pomodoro
+    useEffect(() => {
+        const cargar = async () => {
+            if (!user) return
+            const data = await getPomodoroData(user.uid)
+            if (data) {
+                dispatch(setPomodoro({minutosTotales: data.minutosTotales}))
+            }
+        }
+        cargar()
+    }, [user])
+    useEffect(() => {
+        if (!user) return
+        updatePomodoroInDB(user.uid, minutosTotales)
+    }, [minutosTotales, user])
     //Splash Screen
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -90,10 +115,10 @@ const RootNavigator = () => {
         return <AuthStack />              // no logueado
     }
     if (user && !profileChecked) {
-        return <ActivityIndicator />   // verificando perfil (o un spinner)
+        return <AnimatedSplashScreen />   // verificando perfil (o un spinner)
     }
     if (!hasProfile) {
-        return <CreateProfileScreen />      // logueado, sin perfil → crear
+        return <CreateProfileScreen />      // logueado, sin perfil crear uno
     }
 
     return <AppNavigator />

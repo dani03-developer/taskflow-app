@@ -24,7 +24,6 @@ const RegisterScreen = ({ navigation }: Props) => {
   const [loading, isLoading] =useState(false)
   const handleRegister = async () => {
     setError('')
-    isLoading(true)
     if (!email.trim() || !password || !confirmPassword) {
       setError('Completá todos los campos')
       return
@@ -34,12 +33,14 @@ const RegisterScreen = ({ navigation }: Props) => {
       setError('Las contraseñas no coinciden')
       return
     }
-
+    isLoading(true)
     try {
       await createAccount(email.trim(), password)
     } catch (error) {
       console.error(error)
       setError('No se pudo crear la cuenta')
+    }finally{
+      isLoading(false)
     }
   }
 

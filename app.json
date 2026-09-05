@@ -25,7 +25,12 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-image-picker",{
+          "photosPermission":"TasksFlow pide permiso para ingresar a tu galería"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

@@ -15,17 +15,18 @@ const LoginScreen = ({ navigation }: Props) => {
   const [loading, setLoading] = useState(false);
   const handleLogin = async () => { //asyncpermite ejecutar operaciones que toman tiempo sin bloquear el hilo principal, devolviendo siempre una promesa.
     setError('')
-    setLoading(true)
     if (!email.trim() || !password) {
       setError('Completá email y contraseña')
       return
     }
-
+    setLoading(true)
     try {
       await signIn(email.trim(), password) //aquí se comunica con firebase singIn es el puente entre la app y firebase
     } catch (error) {
       console.error(error)
       setError('Email o contraseña incorrectos')
+    }finally{
+      setLoading(false)
     }
   }
 

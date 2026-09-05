@@ -52,6 +52,8 @@ const ProfileScreen = ({ navigation }: Props) => {
         'Error al cerrar sesión:',
         error
       )
+    }finally{
+      isLoading(false)
     }
   }
 

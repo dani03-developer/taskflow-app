@@ -21,7 +21,6 @@ const CreateProfileScreen = () => {
     const user = useAppSelector(selectCurrentUser);
     const handleRegister = async () => {
         setError('')
-        isLoading(true)
         if (!name.trim() || !career.trim()) {
             setError('Completá todos los campos')
             return
@@ -30,6 +29,7 @@ const CreateProfileScreen = () => {
             setError('Error escoge una meta diaria de estudio')
             return
         }
+        isLoading(true)
         try {
             const newPorfile = {
                 avatar,
@@ -45,6 +45,8 @@ const CreateProfileScreen = () => {
             dispatch(setProfile(newPorfile))
         } catch (error) {
             console.error('Error al crear el perfil:', error);
+        } finally {
+            isLoading(false)
         }
     }
     return (
@@ -63,7 +65,7 @@ const CreateProfileScreen = () => {
                 <Text style={[styles.subtitle, { textAlign: 'center' }]}>Selecciona tu avatar:</Text>
                 <View style={styles.containerImage}>
                     <Pressable onPress={() => setAvatar(true)} style={avatar ? styles.avatarSeleccionado : styles.avatarNormal}><Image source={bep1} style={styles.image} /></Pressable>
-                    <Pressable onPress={() => setAvatar(false)} style={!avatar ? styles.avatarSeleccionado : styles.avatarNormal}> <Image source={bep2} style={styles.image} /></Pressable>
+                    <Pressable onPress={() => setAvatar(false)} style={!avatar ? styles.avatarSeleccionado : styles.avatarNormal}><Image source={bep2} style={styles.image} /></Pressable>
                 </View>
                 <Text style={styles.subtitle}>Nombre o Apodo:</Text>
                 <TextInput
