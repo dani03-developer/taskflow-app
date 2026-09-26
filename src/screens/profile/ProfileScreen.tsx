@@ -1,8 +1,12 @@
+import { selectCurrentUser } from "@/src/features/auth/AuthSlice";
+import { setUserPhoto } from "@/src/features/porfile/profileSlice";
+import { updateProfilePhoto } from "@/src/services/profile/profileService";
 import { Lucide } from "@react-native-vector-icons/lucide";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import * as ImagePicker from 'expo-image-picker';
 import LottieView from 'lottie-react-native';
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from 'react-redux';
 import bep1 from '../../assets/Bep.png';
 import bep2 from '../../assets/bepPink.png';
@@ -10,24 +14,66 @@ import CardTask from '../../components/CardTask';
 import { getTodayString, selectPendingTasks, selectTaskStats } from "../../features/tasks/TasksSlice";
 import { logout } from '../../services/auth/authService';
 import type { RootState } from '../../store';
-import { useAppSelector } from "../../store/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import { colors, fonts, radius, screenStyles, shadows, spacing, textSize } from "../../theme";
 import { ProfileStackParamList } from "../../types";
 type Props = NativeStackScreenProps<ProfileStackParamList, 'Profile'>
 const ProfileScreen = ({ navigation }: Props) => {
+  const dispatch = useAppDispatch()
+  const user = useAppSelector(selectCurrentUser)
+
   const { pending, completed } = useAppSelector(selectTaskStats)
   const pendingTasks = useAppSelector(selectPendingTasks)
-  const {minutosTotales } = useSelector((state: RootState) => state.pomodoro) //accede a los estados de completado y minutos totales a través de store
+  const { minutosTotales } = useSelector((state: RootState) => state.pomodoro) //accede a los estados de completado y minutos totales a través de store
   const workTime = useAppSelector(state => state.profile.profile?.studygoal) ?? 0 //hs
   const workTimetoMin = workTime * 60 //hs
   const progress = minutosTotales === 0 ? 0 : Math.min(100, Math.round((minutosTotales * 100) / workTimetoMin))
- const streak = useAppSelector(state => state.streak.contador)
- const ultimaFecha = useAppSelector(state => state.streak.ultimaFecha)
- const activeToday = ultimaFecha === getTodayString()
- const [loading, isLoading]=useState(false)
- const name = useAppSelector(state => state.profile.profile?.name)
- const career = useAppSelector(state => state.profile.profile?.career)
- const avatar = useAppSelector(state => state.profile.profile?.avatar)
+  const streak = useAppSelector(state => state.streak.contador)
+  const ultimaFecha = useAppSelector(state => state.streak.ultimaFecha)
+  const activeToday = ultimaFecha === getTodayString()
+
+  const [loading, isLoading] = useState(false)
+  const [isSavingPhoto, setIsSavingPhoto] = useState(false)
+
+  const name = useAppSelector(state => state.profile.profile?.name)
+  const career = useAppSelector(state => state.profile.profile?.career)
+  const avatar = useAppSelector(state => state.profile.profile?.avatar)
+  const photo = useAppSelector(state => state.profile.profile?.photoURL)
+
+  const savePhoto = async (photoURL: string) => {
+    setIsSavingPhoto(true)
+    if (!user) return
+    try {
+      await updateProfilePhoto(user.uid, photoURL)
+      dispatch(setUserPhoto(photoURL))
+    }
+    catch (err) {
+      console.error('Error al guardar la foto de perfil:', err)
+      Alert.alert('Error', 'No se pudo guardar la foto. Probá de nuevo.')
+    }
+    finally {
+      setIsSavingPhoto(false)
+    }
+
+  }
+
+  const pickPhoto = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync() //pedir permiso para acceder a la galería
+
+    if (status != 'granted') {
+      Alert.alert('Permiso denegado, No se puede acceder a las imágenes. Por favor habilita el permiso en la configuración.')
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'], //tipo de archivos
+      allowsEditing: true, //permite editar la imagen al usuario
+      aspect: [1, 1], //tamaño de la imagen en este caso es un círculo
+      quality: 0.5  //calidad de la imagen mientras más bajo como 0.5 se comprimirá más la imagen
+    })
+    if (result.canceled) return
+    await savePhoto(result.assets[0].uri)
+  }
+
+
   const handleTaskPress = useCallback(
     (taskId: string) => {
       navigation.navigate('TaskDetail', { taskId })
@@ -52,20 +98,37 @@ const ProfileScreen = ({ navigation }: Props) => {
         'Error al cerrar sesión:',
         error
       )
-    }finally{
+    } finally {
       isLoading(false)
     }
   }
 
   return (
-    <ScrollView style={{backgroundColor:colors.backgroundColor}}>
+    <ScrollView style={{ backgroundColor: colors.backgroundColor }}>
       <View style={screenStyles.spacingContainer}>
         <View style={styles.header}>
           <Text style={styles.title}>Perfil</Text>
           <Pressable><Lucide name="square-pen" size={textSize.bigTitle} color={'#464455'} /></Pressable>
         </View>
         <View style={styles.containerPerfil}>
-          <Image source={avatar ? bep1 : bep2} style={styles.avatarImage} />
+          <View style={styles.avatarContainer}>
+
+          <TouchableOpacity
+            onPress={pickPhoto}
+            disabled={isSavingPhoto}
+          >
+            <Image source={photo ? { uri: photo } : (avatar ? bep1 : bep2)} style={styles.avatarImage} />
+          </TouchableOpacity>
+          {isSavingPhoto ? (
+            <View style={styles.avatarOverlay}>
+              <ActivityIndicator color={colors.green} />
+            </View>
+          ) : (
+            <View style={styles.avatarBadge}>
+              <Lucide name="camera" size={18} color={colors.text} />
+            </View>
+          )}
+           </View>
           <Text style={styles.name}>{name}</Text>
           <Text style={styles.career}>{career}</Text>
           <View style={styles.containerinfo}>
@@ -103,24 +166,24 @@ const ProfileScreen = ({ navigation }: Props) => {
             </View>
           </View>
         </View>
-        {pending>0 ? pendingTasks.map((task) => (
-         <CardTask key={task.id} task={task} onPress={(t) => handleTaskPress(t.id)} />
-        )): 
-        <View style={styles.container}>
-          <Lucide name="circle-dot-dashed" size={textSize.bigTitle} color={colors.darkGray} />
-          <Text style={styles.titleMessage}>¡Bien Hecho! No tienes tareas pendientes</Text>
-          <Text style={styles.subtitle}>Las tareas vencidas aparecerán aquí</Text>
-        </View>
+        {pending > 0 ? pendingTasks.map((task) => (
+          <CardTask key={task.id} task={task} onPress={(t) => handleTaskPress(t.id)} />
+        )) :
+          <View style={styles.container}>
+            <Lucide name="circle-dot-dashed" size={textSize.bigTitle} color={colors.darkGray} />
+            <Text style={styles.titleMessage}>¡Bien Hecho! No tienes tareas pendientes</Text>
+            <Text style={styles.subtitle}>Las tareas vencidas aparecerán aquí</Text>
+          </View>
         }
-      <TouchableOpacity
-        style={styles.logoutButton}
-        disabled={loading}
-        onPress={handleLogout}
-      >
-        <Text style={styles.logoutText}>
-        {loading ? <ActivityIndicator color={colors.backgroundColor}/>: "Cerrar sesión"}
-        </Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.logoutButton}
+          disabled={loading}
+          onPress={handleLogout}
+        >
+          <Text style={styles.logoutText}>
+            {loading ? <ActivityIndicator color={colors.backgroundColor} /> : "Cerrar sesión"}
+          </Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -141,9 +204,36 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 3
   },
+  avatarContainer: {
+    width: 120,
+    height: 120,
+    position: 'relative',
+    marginBottom: spacing.sm
+  },
   avatarImage: {
     width: 120,
-    height: 120
+    height: 120,
+    borderRadius: 120 / 2
+  },
+    avatarOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 120 / 2,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  avatarBadge: {
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+    width: 30,
+    height: 30,
+    borderRadius: 14,
+    backgroundColor: colors.deepGray,
+    borderWidth: 2,
+    borderColor: colors.deepGray,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   name: {
     color: colors.text,
@@ -232,12 +322,12 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     fontSize: 15,
   },
-   container: {
+  container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical:spacing.xxl+4,
-    paddingHorizontal:spacing.md,
+    paddingVertical: spacing.xxl + 4,
+    paddingHorizontal: spacing.md,
     gap: spacing.sm
   },
   titleMessage: {

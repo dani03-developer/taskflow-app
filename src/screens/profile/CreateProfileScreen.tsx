@@ -36,12 +36,9 @@ const CreateProfileScreen = () => {
                 name,
                 career,
                 studygoal: meta,
+                photoURL: null,
             }
             await saveProfile(user?.uid ?? '', newPorfile)
-            setAvatar(true)
-            setname('')
-            setCareer('')
-            setMeta(0)
             dispatch(setProfile(newPorfile))
         } catch (error) {
             console.error('Error al crear el perfil:', error);

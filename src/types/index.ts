@@ -16,6 +16,7 @@ export type userProfile ={
     name: string,
     career: string,
     studygoal: number,
+    photoURL: string | null
 }
 export type TasksStackParamList ={
     Tasks: { openForm?: boolean } | undefined
