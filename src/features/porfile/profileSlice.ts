@@ -28,6 +28,6 @@ const profileSlice = createSlice({
 })
 export const { setProfile, clearProfile, setUserPhoto } = profileSlice.actions
 export const selectUserPhoto = (state: {
-    auth: ProfileState
-}) => state.auth.profile?.photoURL ?? null
+    profile: ProfileState
+}) => state.profile.profile?.photoURL ?? null
 export default profileSlice.reducer

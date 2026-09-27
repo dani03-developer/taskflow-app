@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { categories } from "../data";
 import { selectCurrentUser } from '../features/auth/AuthSlice';
@@ -64,23 +64,29 @@ const TaskForm = ({ visibleForm, onClose }: Props) => {
         if (isButtonDisabled || !fecha || !user) return //se sale de la función
         try {
             await createTask(
-            {
-                title,
-                description,
-                category,
-                date: formatDateString(fecha),
-                status: 'Por Hacer'
-            },
+                {
+                    title,
+                    description,
+                    category,
+                    date: formatDateString(fecha),
+                    status: 'Por Hacer'
+                },
                 user.uid
             )
-        setTitle('')
-        setDescription('')
-        setCategory(categories[0])
-        setFecha(null)
-        setFechaTouched(false)
-        onClose();
-        }catch (error) {
-            console.error('Error al crear la tarea:', error);
+            setTitle('')
+            setDescription('')
+            setCategory(categories[0])
+            setFecha(null)
+            setFechaTouched(false)
+            onClose();
+        } catch (error) {
+            Alert.alert('Error', 'No se pudo crear la tarea. Probá de nuevo.', [
+                {
+                    text: 'Cerrar',
+                    onPress: () => console.log('Alert cerrado, error: ',error),
+                    style: 'cancel',
+                }
+            ]);
         }
     }
 

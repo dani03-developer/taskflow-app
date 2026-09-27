@@ -2,7 +2,7 @@ import { setProfile } from '@/src/features/porfile/profileSlice'
 import { colors, fonts, screenStyles, textSize } from '@/src/theme'
 import LottieView from 'lottie-react-native'
 import { useState } from 'react'
-import { ActivityIndicator, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import { ActivityIndicator, Alert, Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import bep1 from '../../assets/Bep.png'
 import bep2 from '../../assets/bepPink.png'
 import RulerPickerTime from '../../components/RulerPickerTime'
@@ -41,13 +41,19 @@ const CreateProfileScreen = () => {
             await saveProfile(user?.uid ?? '', newPorfile)
             dispatch(setProfile(newPorfile))
         } catch (error) {
-            console.error('Error al crear el perfil:', error);
+            Alert.alert('Error', 'No se pudo crear el perfil. Probá de nuevo.', [
+                {
+                    text: 'Cerrar',
+                    onPress: () => console.log('Alert cerrado, error: ',error),
+                    style: 'cancel',
+                }
+            ]);
         } finally {
             isLoading(false)
         }
     }
     return (
-        <View style={[screenStyles.container, screenStyles.spacingContainer, styles.container]}>
+        <ScrollView style={[screenStyles.container, screenStyles.spacingContainer, styles.container]}>
             <View style={styles.containerAnimation}>
                 <Text style={styles.title}>Hola! soy bep, es hora {"\n"} de crear tu perfil </Text>
                 <LottieView
@@ -116,7 +122,7 @@ const CreateProfileScreen = () => {
                 </Pressable>
 
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
@@ -200,6 +206,6 @@ const styles = StyleSheet.create({
     },
     avatarNormal: {
         borderWidth: 2,
-        borderColor: 'transparent',  
+        borderColor: 'transparent',
     },
 })

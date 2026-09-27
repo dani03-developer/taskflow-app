@@ -37,8 +37,7 @@ const RegisterScreen = ({ navigation }: Props) => {
     try {
       await createAccount(email.trim(), password)
     } catch (error) {
-      console.error(error)
-      setError('No se pudo crear la cuenta')
+      setError('Error, no se pudo crear la cuenta')
     }finally{
       isLoading(false)
     }

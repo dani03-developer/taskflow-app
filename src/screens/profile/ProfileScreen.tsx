@@ -40,6 +40,11 @@ const ProfileScreen = ({ navigation }: Props) => {
   const avatar = useAppSelector(state => state.profile.profile?.avatar)
   const photo = useAppSelector(state => state.profile.profile?.photoURL)
 
+  const handleEditProfile = useCallback(() => { //navegación a editProfilescreen
+    if (!user) return
+    navigation.navigate('EditProfileScreen', { userId: user.uid })
+  }, [navigation, user])
+
   const savePhoto = async (photoURL: string) => {
     setIsSavingPhoto(true)
     if (!user) return
@@ -48,8 +53,14 @@ const ProfileScreen = ({ navigation }: Props) => {
       dispatch(setUserPhoto(photoURL))
     }
     catch (err) {
-      console.error('Error al guardar la foto de perfil:', err)
-      Alert.alert('Error', 'No se pudo guardar la foto. Probá de nuevo.')
+      Alert.alert('Error', 'No se pudo guardar la foto. Probá de nuevo.', [
+        {
+          text: 'Cerrar',
+          onPress: () => console.log('Alert cerrado, error: ', err),
+          style: 'cancel',
+        }
+      ]);
+
     }
     finally {
       setIsSavingPhoto(false)
@@ -61,7 +72,13 @@ const ProfileScreen = ({ navigation }: Props) => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync() //pedir permiso para acceder a la galería
 
     if (status != 'granted') {
-      Alert.alert('Permiso denegado, No se puede acceder a las imágenes. Por favor habilita el permiso en la configuración.')
+      Alert.alert('Error, permiso denegado', 'No se puede acceder a las imágenes. Por favor habilita el permiso en la configuración.', [
+        {
+          text: 'Cerrar',
+          onPress: () => console.log('Alert cerrado'),
+          style: 'cancel',
+        }
+      ]);
     }
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'], //tipo de archivos
@@ -94,10 +111,13 @@ const ProfileScreen = ({ navigation }: Props) => {
     try {
       await logout()
     } catch (error) {
-      console.error(
-        'Error al cerrar sesión:',
-        error
-      )
+      Alert.alert('Error', 'Error al cerrar sesión. Probá de nuevo.', [
+        {
+          text: 'Cerrar',
+          onPress: () => console.log('Alert cerrado el error es:', error),
+          style: 'cancel',
+        }
+      ]);
     } finally {
       isLoading(false)
     }
@@ -108,27 +128,29 @@ const ProfileScreen = ({ navigation }: Props) => {
       <View style={screenStyles.spacingContainer}>
         <View style={styles.header}>
           <Text style={styles.title}>Perfil</Text>
-          <Pressable><Lucide name="square-pen" size={textSize.bigTitle} color={'#464455'} /></Pressable>
+          <Pressable onPress={handleEditProfile} hitSlop={8}>
+            <Lucide name="square-pen" size={textSize.bigTitle} color={'#464455'} />
+          </Pressable>
         </View>
         <View style={styles.containerPerfil}>
           <View style={styles.avatarContainer}>
 
-          <TouchableOpacity
-            onPress={pickPhoto}
-            disabled={isSavingPhoto}
-          >
-            <Image source={photo ? { uri: photo } : (avatar ? bep1 : bep2)} style={styles.avatarImage} />
-          </TouchableOpacity>
-          {isSavingPhoto ? (
-            <View style={styles.avatarOverlay}>
-              <ActivityIndicator color={colors.green} />
-            </View>
-          ) : (
-            <View style={styles.avatarBadge}>
-              <Lucide name="camera" size={18} color={colors.text} />
-            </View>
-          )}
-           </View>
+            <TouchableOpacity
+              onPress={pickPhoto}
+              disabled={isSavingPhoto}
+            >
+              <Image source={photo ? { uri: photo } : (avatar ? bep1 : bep2)} style={styles.avatarImage} />
+            </TouchableOpacity>
+            {isSavingPhoto ? (
+              <View style={styles.avatarOverlay}>
+                <ActivityIndicator color={colors.green} />
+              </View>
+            ) : (
+              <View style={styles.avatarBadge}>
+                <Lucide name="camera" size={18} color={colors.text} />
+              </View>
+            )}
+          </View>
           <Text style={styles.name}>{name}</Text>
           <Text style={styles.career}>{career}</Text>
           <View style={styles.containerinfo}>
@@ -215,7 +237,7 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 120 / 2
   },
-    avatarOverlay: {
+  avatarOverlay: {
     ...StyleSheet.absoluteFillObject,
     borderRadius: 120 / 2,
     backgroundColor: 'rgba(0,0,0,0.4)',

@@ -29,6 +29,9 @@ export type ProfileStackParamList={
     TaskDetail: {
         taskId: string
     }
+    EditProfileScreen: {
+        userId: string
+    }
 }
 export type CalendarStackParamList={
     Calendar: undefined

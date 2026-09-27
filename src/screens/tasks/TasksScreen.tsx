@@ -20,7 +20,6 @@ type NavigationProp = NativeStackNavigationProp<
 >
 type TasksRouteProp = RouteProp<TasksStackParamList, 'Tasks'>
 const TasksScreen = ({ navigation, route }: { navigation: NavigationProp, route: TasksRouteProp }) => {
-  const name = 'Dani'
   const dispatch = useAppDispatch()
   const user = useAppSelector(selectCurrentUser)
   const tasks = useAppSelector(selectFilteredTask)
@@ -47,7 +46,7 @@ const TasksScreen = ({ navigation, route }: { navigation: NavigationProp, route:
     }
   }, [route.params?.openForm, navigation])
 
-  const handleTaskPress = useCallback(
+  const handleTaskPress = useCallback( //navegación al taskdetail
     (taskId: string) => {
       navigation.navigate('TaskDetail', { taskId })
     }, [navigation]

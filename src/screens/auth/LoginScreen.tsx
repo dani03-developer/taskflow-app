@@ -23,7 +23,6 @@ const LoginScreen = ({ navigation }: Props) => {
     try {
       await signIn(email.trim(), password) //aquí se comunica con firebase singIn es el puente entre la app y firebase
     } catch (error) {
-      console.error(error)
       setError('Email o contraseña incorrectos')
     }finally{
       setLoading(false)

@@ -31,3 +31,8 @@ export const updateProfilePhoto = async (userId: string, photoURL: string) => {
     const profileRef = doc(db, 'user', userId);
     await updateDoc(profileRef, { photoURL });
 };
+export const updateProfileData = async (userId: string, profile: userProfile) => {
+    const profileRef = doc(db, 'user', userId);
+    await updateDoc(profileRef, profile);
+    
+};

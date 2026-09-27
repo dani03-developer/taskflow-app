@@ -1,6 +1,6 @@
 import { Lucide } from "@react-native-vector-icons/lucide";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { updateStreak } from "../../features/streak/streakSlice";
 import { isPending, selectTaskById } from "../../features/tasks/TasksSlice";
 import { removeTask, updateTaskStatus } from "../../services/tasks/tasksService";
@@ -9,19 +9,19 @@ import { colors, fonts, radius, screenStyles, shadows, spacing, statusColor, tex
 type TaskDetailOnlyParamList = {
   TaskDetail: { taskId: string }
 }
-type Props = NativeStackScreenProps<TaskDetailOnlyParamList,'TaskDetail'>
-const TaskDetailScreen = ({navigation,route}:Props) => {
-  const {taskId} = route.params
+type Props = NativeStackScreenProps<TaskDetailOnlyParamList, 'TaskDetail'>
+const TaskDetailScreen = ({ navigation, route }: Props) => {
+  const { taskId } = route.params
   const dispatch = useAppDispatch()
-  const task =useAppSelector(selectTaskById(taskId))
+  const task = useAppSelector(selectTaskById(taskId))
   if (!task) {
     return null
   }
   const estadoVisual = isPending(task) ? 'Pendiente' : task.status
   const { background, text } = statusColor[estadoVisual]
 
-  const handleToogle = async ()=>{
-    try{
+  const handleToogle = async () => {
+    try {
       const nuevoEstado = task.status === 'Completado' ? 'Por Hacer' : 'Completado'
       await updateTaskStatus(
         task.id,
@@ -30,43 +30,50 @@ const TaskDetailScreen = ({navigation,route}:Props) => {
       if (nuevoEstado === 'Completado') {
         dispatch(updateStreak())      // solo si la estás completando
       }
-    } catch (error){
-      console.error(
-        'Error al actualizar tarea: ', error
-      )
+    } catch (error) {
+      Alert.alert('Error', 'No se pudo actualizar la tarea. Probá de nuevo.', [
+        {
+          text: 'Cerrar',
+          onPress: () => console.log('Alert cerrado, error:',error),
+          style: 'cancel',
+        }
+      ]);
     }
   }
- const handleDelete = async () => {
-  try {
-    await removeTask(task.id)
+  const handleDelete = async () => {
+    try {
+      await removeTask(task.id)
 
-    navigation.goBack()
-  } catch (error) {
-    console.error(
-      'Error al eliminar tarea:',
-      error
-    )
+      navigation.goBack()
+    } catch (error) {
+      Alert.alert('Error', 'No se pudo eliminar la tarea. Probá de nuevo.', [
+        {
+          text: 'Cerrar',
+          onPress: () => console.log('Alert cerrado, error:',error),
+          style: 'cancel',
+        }
+      ]);
+    }
   }
-}
 
   return (
     <View style={[screenStyles.container, screenStyles.spacingContainer]}>
-      <Pressable style={styles.buttonBack} onPress={()=>navigation.goBack()}><Lucide name="chevron-left" size={20} color={colors.textGray} /></Pressable>
+      <Pressable style={styles.buttonBack} onPress={() => navigation.goBack()}><Lucide name="chevron-left" size={20} color={colors.textGray} /></Pressable>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
-        <View style={[styles.button,{backgroundColor:background}]}>
+        <View style={[styles.button, { backgroundColor: background }]}>
           <Text style={[styles.textButton, { color: text }]}>{estadoVisual}</Text>
         </View>
         <Text style={styles.title}>{task.title}</Text>
         <View style={styles.containerDetail}>
           <View style={[styles.detail, { borderBottomWidth: 1, borderBottomColor: '#CFCFCF', paddingBottom: 12 }]}>
-            <Text style={{fontFamily:fonts.Intersemibold, color:colors.text}}>Categoría</Text>
+            <Text style={{ fontFamily: fonts.Intersemibold, color: colors.text }}>Categoría</Text>
             <View style={[styles.button, styles.buttonCategory]}>
               <Text style={[styles.textButton, { fontWeight: 600 }]}>{task.category}</Text>
             </View>
           </View>
           <View style={styles.detail}>
-            <Text style={{fontFamily:fonts.Intersemibold, color:colors.text}}>Fecha</Text>
-            <View style={[styles.button,  styles.buttonCategory]}>
+            <Text style={{ fontFamily: fonts.Intersemibold, color: colors.text }}>Fecha</Text>
+            <View style={[styles.button, styles.buttonCategory]}>
               <Text style={[styles.textButton, { fontWeight: 600 }]}>{task.date}</Text>
             </View>
           </View>
@@ -117,24 +124,24 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     alignItems: 'flex-start',
   },
-  button:{
+  button: {
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs,
     borderRadius: radius.md,
     alignItems: 'center'
   },
-  buttonCategory:{
-    backgroundColor:colors.softGray
+  buttonCategory: {
+    backgroundColor: colors.softGray
   },
   textButton: {
     fontSize: textSize.text,
     color: colors.textGray,
-    fontFamily:fonts.Intersemibold,
+    fontFamily: fonts.Intersemibold,
   },
   title: {
     color: colors.text,
     fontSize: textSize.title + 2,
-    fontFamily:fonts.Interbold,
+    fontFamily: fonts.Interbold,
   },
   containerDetail: {
     width: '100%',
@@ -157,13 +164,13 @@ const styles = StyleSheet.create({
   subtitle: {
     color: colors.text,
     fontSize: textSize.title,
-    fontFamily:fonts.Intersemibold
+    fontFamily: fonts.Intersemibold
   },
-  description:{
-    color:colors.text,
-    fontSize:textSize.text+1,
-    lineHeight:spacing.xl,
-    fontFamily:fonts.Interregular
+  description: {
+    color: colors.text,
+    fontSize: textSize.text + 1,
+    lineHeight: spacing.xl,
+    fontFamily: fonts.Interregular
   },
   buttonAction: {
     flexDirection: 'row',
@@ -176,7 +183,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: textSize.subTitle,
-    fontFamily:fonts.Intersemibold
+    fontFamily: fonts.Intersemibold
   },
   actionUndo: {
     backgroundColor: colors.purple
