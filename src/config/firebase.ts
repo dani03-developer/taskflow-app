@@ -1,5 +1,7 @@
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { getApps, initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+// @ts-expect-error Firebase's React Native export is missing from its generic TypeScript declarations.
+import { getReactNativePersistence, initializeAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
@@ -11,8 +13,10 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app =
-getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-export const auth = getAuth(app); //exporta la autenticación de firebase para poder usarla
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+//export const auth = getAuth(app); //exporta la autenticación de firebase para poder usarla
+export const auth = initializeAuth(app,{
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+});
 export const db = getFirestore(app); //export la base de datos
 export default app;
