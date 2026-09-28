@@ -94,7 +94,11 @@ Esto permite que la información de tareas y streak se comparta entre pantallas 
 
 ## Demo
 
-https://github.com/user-attachments/assets/209a319b-f39a-4ec8-b6aa-c2e4420459bc
+
+https://github.com/user-attachments/assets/9aa70e5e-9891-4d61-9564-2e2cbd6a9e1f
+
+
+
 
 ## Más información
 
