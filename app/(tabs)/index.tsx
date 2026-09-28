@@ -17,6 +17,7 @@ export default function App() {
     'gaegu-bold': require('../../src/assets/fonts/gaegu/Gaegu-Bold.ttf'),
   });
 
+
   useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync();   // ya cargaron: ocultá el splash

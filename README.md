@@ -1,89 +1,108 @@
 # TaskFlow 📋
 
-TaskFlow es una app de productividad hecha con [Expo](https://expo.dev) y React Native. Permite organizar tareas, visualizarlas en un calendario, usar un temporizador Pomodoro y gestionar el perfil del usuario.
+TaskFlow es una app de productividad construida con Expo y React Native para organizar tareas, mantener el foco con Pomodoro y llevar un seguimiento del progreso del usuario.
 
-## Funcionalidades
+## ¿Qué incluye?
 
-- **Tareas**: crear, ver el detalle y gestionar tareas desde una lista principal.
-- **Calendario**: visualizar las tareas organizadas por fecha.
-- **Pomodoro**: temporizador para sesiones de trabajo enfocado.
-- **Perfil**: información y ajustes del usuario.
+- Gestión de tareas con creación, filtrado y detalle.
+- Vista de calendario para revisar tareas por fecha.
+- Temporizador de enfoque tipo Pomodoro.
+- Sistema de streak para motivación diaria.
+- Autenticación y perfil de usuario con Firebase.
+- Navegación por tabs y stacks organizada por secciones.
+- Estado global centralizado con Redux Toolkit.
 
-Navegación basada en tabs (`@react-navigation/bottom-tabs`) con un stack independiente por sección (`src/navigation`).
+## Stack tecnológico
 
-## Estado global con Redux
-
-El estado de las tareas se maneja con **Redux Toolkit** (`@reduxjs/toolkit`) y **react-redux**:
-
-- `src/store/index.ts`: configura el store (`configureStore`) y expone los tipos `RootState` y `AppDispatch`.
-- `src/store/hooks/hooks.ts`: hooks tipados `useAppDispatch` y `useAppSelector`.
-- `src/features/tasks/TasksSlice.ts`: slice de tareas (`tasks`) con:
-  - **Acciones**: `addTask`, `toogleTaskStatus`, `deleteTask`, `setFilter`.
-  - **Selectores**: `selectAllTask`, `selectFilter`, `selectTaskById`, `selectFilteredTask`, `selectPendingTasks` y `selectTaskStats` (memoizados con `createSelector`).
-  - Filtros disponibles (`taskFilter`): `todo`, `completed`, `pending`.
-
-Las pantallas de tareas, calendario y perfil consumen este store en lugar de estado local, por lo que las tareas se mantienen sincronizadas entre secciones.
-
-## Video de demostración
-
-
-https://github.com/user-attachments/assets/209a319b-f39a-4ec8-b6aa-c2e4420459bc
-
-
-
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-Este proyecto usa [file-based routing](https://docs.expo.dev/router/introduction) a través de la carpeta **app**, y la lógica de pantallas y componentes vive en **src**.
+- React Native + Expo
+- TypeScript
+- Expo Router
+- React Navigation
+- Redux Toolkit
+- Firebase
+- Lottie React Native
+- React Native Calendars
 
 ## Estructura del proyecto
 
-```
-app/                 # Entry point (expo-router)
+```text
+app/                  # Rutas y punto de entrada principal
 src/
-  components/        # Componentes reutilizables (TaskForm, CardTask, Calendar, etc.)
-  features/          # Slices de Redux (tasks, etc.)
-  navigation/         # Stacks y navegador principal
-  screens/            # Pantallas: tasks, calendar, pomodoro, profile
-  store/              # Configuración de Redux (store, hooks tipados)
-  data/               # Datos y mocks
-  theme/              # Estilos y tema
-  types/              # Tipos de TypeScript
-  utils/              # Utilidades
+  components/         # Componentes reutilizables
+  features/           # Slices de Redux (tasks, streak, pomodoro, auth)
+  navigation/         # Navegación principal y stacks
+  screens/            # Pantallas de login, tareas, calendario, perfil y pomodoro
+  services/           # Lógica de acceso a Firebase y datos
+  store/              # Configuración del store y hooks tipados
+  theme/              # Colores, tipografías, spacing y estilos
+  types/              # Tipos globales de TypeScript
+  utils/              # Utilidades varias
 ```
 
-## Get a fresh project
+## Requisitos previos
 
-When you're ready, run:
+- Node.js LTS
+- npm
+- Android Studio o un emulador configurado
+- Expo Go o un dispositivo físico
+
+## Instalación
+
+1. Clona el repositorio.
+2. Instala dependencias:
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+3. Inicia la aplicación:
 
-## Learn more
+```bash
+npx expo start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+También puedes usar:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+npm start
+npm run android
+npm run ios
+npm run web
+```
+
+## Scripts disponibles
+
+```bash
+npm start          # Inicia Expo
+npm run android    # Ejecuta la app en Android
+npm run ios        # Ejecuta la app en iOS
+npm run web        # Ejecuta la app en web
+npm run lint       # Ejecuta ESLint
+npm run reset-project  # Reinicia la estructura del proyecto
+```
+
+## Estado global y arquitectura
+
+La app usa Redux para mantener sincronizado el estado de tareas y rendimiento del usuario. La configuración base se encuentra en:
+
+- `src/store/index.ts`
+- `src/store/hooks/hooks.ts`
+- `src/features/tasks/TasksSlice.ts`
+- `src/features/streak/streakSlice.ts`
+
+Esto permite que la información de tareas y streak se comparta entre pantallas sin duplicar estados locales.
+
+## Demo
+
+https://github.com/user-attachments/assets/209a319b-f39a-4ec8-b6aa-c2e4420459bc
+
+## Más información
+
+Para consultar la documentación oficial de Expo y React Native:
+
+- [Expo Documentation](https://docs.expo.dev/)
+- [Expo Router](https://docs.expo.dev/router/introduction)
+- [React Native](https://reactnative.dev/)
+
+
 

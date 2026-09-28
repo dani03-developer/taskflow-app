@@ -20,7 +20,7 @@ const PomodoroScreen = () => {
   const dispatch = useAppDispatch()
   const animatedOffset = useSharedValue(0)
   const time = useAppSelector((state) => state.pomodoro.time)
-  const workTime =time * 60; //minutos está en segundos
+  const workTime = time * 60; //minutos está en segundos
   const [isRuning, setRun] = useState(false)
   const [segundos, setSegundos] = useState(workTime)
   const minutos = Math.floor(segundos / 60)
@@ -30,7 +30,8 @@ const PomodoroScreen = () => {
   const animationRef = useRef<LottieView>(null)
   const actualScene = useRef(0)
   const [formOpen, setFormOpen] = useState(false)
-  
+
+  //Pomodoro
   useEffect(() => {
     if (!isRuning) return
 
@@ -55,7 +56,7 @@ const PomodoroScreen = () => {
   useEffect(() => {
     const target = circumference * (segundos / workTime)
     animatedOffset.value = withTiming(target, { duration: 1000 })  // 1s = el hueco entre segundos
-  }, [segundos,workTime])
+  }, [segundos, workTime])
 
   const animatedProps = useAnimatedProps(() => ({
     strokeDashoffset: animatedOffset.value
@@ -72,6 +73,7 @@ const PomodoroScreen = () => {
     actualScene.current = 0
   }, [workTime])
 
+  //Animación del pomodoro
   useEffect(() => {
     if (isRuning) {
       if (progress <= 66 && progress > 33 && actualScene.current < 1) {
@@ -89,7 +91,7 @@ const PomodoroScreen = () => {
     }
   }, [isRuning, progress, segundos])
 
-  
+
   return (
     <View style={[screenStyles.container, screenStyles.spacingContainer, styles.pomodoroContainer]}>
       <Text style={styles.title}>Focus</Text>
@@ -137,7 +139,7 @@ const PomodoroScreen = () => {
         </View>
       </View>
       <TouchableOpacity onPress={() => setFormOpen(true)}>
-         <Text style={styles.min}>{tiempo} min</Text>
+        <Text style={styles.min}>{tiempo} min</Text>
       </TouchableOpacity>
 
       {!isRuning && segundos === workTime ? <TouchableOpacity //lo que sea que esté en isRuning para que aparezca el empezar debe ser false
@@ -164,12 +166,12 @@ const PomodoroScreen = () => {
             <Lucide name="rotate-ccw" size={25} color={colors.textRed} />
           </TouchableOpacity>
         </View>}
-        <RulerPickerTime
-          visible={formOpen}
-          onClose={() => setFormOpen(false)}
-          onConfirm={(value) => dispatch(changeTime(value))}
-          initialValue={time}
-        />
+      <RulerPickerTime
+        visible={formOpen}
+        onClose={() => setFormOpen(false)}
+        onConfirm={(value) => dispatch(changeTime(value))}
+        initialValue={time}
+      />
     </View>
   )
 }
@@ -185,7 +187,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',            // y vertical
   },
   title: {
-    fontSize: textSize.bigTitle+6,
+    fontSize: textSize.bigTitle + 6,
     color: colors.text,
     fontFamily: fonts.BepFont,
   },
@@ -204,7 +206,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: colors.textPurple,
     fontSize: textSize.title,
-    fontFamily:fonts.Interbold
+    fontFamily: fonts.Interbold
   },
   containerModificator: {
     gap: 5, flexDirection: 'row',
