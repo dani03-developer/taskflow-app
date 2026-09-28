@@ -17,8 +17,12 @@
       "package": "com.anonymous.taskflow",
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/icon.png",
-        "backgroundColor": "#FAFBF6",
-      }
+        "backgroundColor": "#FAFBF6"
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "output": "static"
@@ -27,14 +31,27 @@
       "expo-router",
       "expo-font",
       [
-        "expo-image-picker",{
-          "photosPermission":"TasksFlow pide permiso para ingresar a tu galería"
+        "expo-image-picker",
+        {
+          "photosPermission": "TasksFlow pide permiso para ingresar a tu galería"
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "04ae8354-f321-48d4-933e-7a38ac8a0f95"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/04ae8354-f321-48d4-933e-7a38ac8a0f95"
     }
   }
 }

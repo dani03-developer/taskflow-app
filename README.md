@@ -81,6 +81,16 @@ npm run lint       # Ejecuta ESLint
 npm run reset-project  # Reinicia la estructura del proyecto
 ```
 
+## Troubleshooting
+
+Si al exportar o iniciar la app aparece un error de importación de Lottie en web/Expo, instala la dependencia requerida:
+
+```bash
+npm install --legacy-peer-deps @lottiefiles/dotlottie-react@^0.6.5
+```
+
+Esto resuelve el problema de `lottie-react-native` al compilar con Expo.
+
 ## Estado global y arquitectura
 
 La app usa Redux para mantener sincronizado el estado de tareas y rendimiento del usuario. La configuración base se encuentra en:
@@ -96,6 +106,7 @@ Esto permite que la información de tareas y streak se comparta entre pantallas 
 
 
 https://github.com/user-attachments/assets/9aa70e5e-9891-4d61-9564-2e2cbd6a9e1f
+
 
 
 
