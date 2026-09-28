@@ -104,12 +104,13 @@ Esto permite que la información de tareas y streak se comparta entre pantallas 
 
 ## Demo
 
-
 https://github.com/user-attachments/assets/9aa70e5e-9891-4d61-9564-2e2cbd6a9e1f
 
 
+## Expo Links:
 
-
+- `https://expo.dev/accounts/danimachaca03/projects/task-flow`
+- `https://expo.dev/accounts/danimachaca03/projects/task-flow/updates/56b1baf8-0111-4679-8819-df512c137b15/android`
 
 ## Más información
 
